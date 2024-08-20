@@ -52,7 +52,7 @@ const Orders = () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       };
-      const ordersResponse = await fetch(`${BASE_URL}/order?status=${status}`, {
+      const ordersResponse = await fetch(`${BASE_URL}/bookings`, {
         method: "GET",
         credentials: "include",
         headers: headers,
@@ -65,14 +65,8 @@ const Orders = () => {
       }
 
       const ordersData = await ordersResponse.json();
-
-      const userInfoPromises = ordersData.data.map(async (order) => {
-        const firstName = await fetchUsername(order.user._id);
-        return { ...order, firstName };
-      });
-
-      const updatedOrders = await Promise.all(userInfoPromises);
-      setOrders(updatedOrders);
+      console.log(ordersData);
+      setOrders(ordersData);
 
       setLoading(false);
     } catch (err) {
@@ -96,7 +90,7 @@ const Orders = () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       };
-      const response = await fetch(`${BASE_URL}/order/orders/${orderId}`, {
+      const response = await fetch(`${BASE_URL}/order/bookings/${orderId}`, {
         method: "PUT",
         headers: headers,
         credentials: "include",
@@ -126,6 +120,15 @@ const Orders = () => {
   //     fetchData();
   //   }, 1000);
   // };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
   return (
     <div className="data-box container-fluid pt-4">
@@ -224,10 +227,10 @@ const Orders = () => {
                     <th scope="row" className="text-center">
                       {index + 1}
                     </th>
-                    <td>{order.firstName}</td>
-                    <td>{order?.products?.length}</td>
-                    <td>{order.shippingAddress}</td>
-                    <td>{order.totalAmount}</td>
+                    <td>{order?.customer?.name}</td>
+                    <td>{formatDate(order?.date)}</td>
+                    <td>{order.time}</td>
+                    <td>{order.service.price}</td>
                     <td>
                       <select
                         className="form-select"

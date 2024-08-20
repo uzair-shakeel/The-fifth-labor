@@ -20,8 +20,11 @@ const Menu = () => {
           <h1 className="dashboard-heading">Menu</h1>
           <div className="d-flex align-item-center justify-content-between pt-5 mt-3 mb-1">
             <h5 className="dashboard-text">All Foods</h5>
-            <Link className="add-tour-btn btn btn-light" to="/createfood">
-              <i className="ri-file-add-line"></i> Create Food
+            <Link
+              className="add-tour-btn btn btn-light text-white font-bold"
+              to="/createservice"
+            >
+              <i className="ri-file-add-line "></i> Create Food
             </Link>
           </div>
           <div className="col-12 table-box ">
@@ -99,7 +102,7 @@ export const AllMenuData = ({ item }) => {
       <td className="text-center">
         <Link
           className="btn btn-light text-white action-btn"
-          to={`/updatefood/${_id}`}
+          to={`/updateservice/${_id}`}
         >
           <FaEdit size={20} />
         </Link>

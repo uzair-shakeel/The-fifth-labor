@@ -54,7 +54,6 @@ exports.createService = async (req, res) => {
 
 // Update an existing service with new subservices and image upload
 exports.updateService = async (req, res) => {
-
   try {
     const { name, description, price, duration, subservices } = req.body;
     let updatedData = { name, description, price, duration };

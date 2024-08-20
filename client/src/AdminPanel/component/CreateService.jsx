@@ -109,7 +109,7 @@ const CreateService = () => {
 
   return (
     <>
-      <div className="d-flex w-100 align-items-center justify-content-center vh-100">
+      <div className="d-flex w-100 align-items-center justify-content-center ">
         <div className="container">
           <div className="row">
             <div className="col-12 shadow-lg rounded-2">

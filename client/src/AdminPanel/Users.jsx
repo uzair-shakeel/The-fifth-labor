@@ -80,7 +80,7 @@ const Users = () => {
   //       "Content-Type": "application/json",
   //       Authorization: `Bearer ${token}`,
   //     };
-  //     const res = await fetch(`${BASE_URL}/order/ordersbyid/${userId}`, {
+  //     const res = await fetch(`${BASE_URL}/order/bookingsbyid/${userId}`, {
   //       method: "GET",
   //       credentials: "include",
   //       headers: headers,

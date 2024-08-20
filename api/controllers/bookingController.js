@@ -6,19 +6,23 @@ const User = require("../models/User"); // Assuming you have a User model
 // Create a new booking
 exports.createBooking = async (req, res) => {
   try {
-    const { customerId, serviceId, date, time, notes } = req.body;
-    console.log(serviceId);
-    console.log(customerId);
-    // Validate service and customer
+    const { serviceId, date, time, notes } = req.body;
 
+    const customerId = req.user._id; // assuming your User model uses _id as the identifier
+
+    // Validate service
+    const service = await Service.findById(serviceId);
     if (!service) {
       return res.status(404).json({ message: "Service not found" });
     }
 
+    // Validate customer
+    const customer = await User.findById(customerId);
     if (!customer) {
       return res.status(404).json({ message: "Customer not found" });
     }
 
+    // Create a new booking
     const newBooking = new Booking({
       customer: customerId,
       service: serviceId,
@@ -27,9 +31,13 @@ exports.createBooking = async (req, res) => {
       notes,
     });
 
+    // Save the booking to the database
     const savedBooking = await newBooking.save();
+
+    // Return the saved booking as the response
     res.status(201).json(savedBooking);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Error creating booking" });
   }
 };

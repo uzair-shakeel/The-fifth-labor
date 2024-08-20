@@ -88,7 +88,7 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="nav-item admin-nav-items">
-              <Link to="/menu" className="nav-link sidebar-link text-white">
+              <Link to="/services" className="nav-link sidebar-link text-white">
                 <i
                   className={`ri-restaurant-line ${isCollapsed ? "" : "pe-2"}`}
                 ></i>
@@ -96,7 +96,7 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="nav-item admin-nav-items">
-              <Link to="/orders" className="nav-link sidebar-link text-white">
+              <Link to="/bookings" className="nav-link sidebar-link text-white">
                 <i
                   className={`ri-calendar-2-fill ${isCollapsed ? "" : "pe-2"}`}
                 ></i>

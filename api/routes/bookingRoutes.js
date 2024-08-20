@@ -9,15 +9,16 @@ const {
   deleteBooking,
   getAllBookingsByUser,
 } = require("../controllers/bookingController");
+const { protect, admin } = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
 // Define routes
-router.post("/", createBooking); // Create a new booking
+router.post("/", protect, createBooking); // Create a new booking
 router.get("/", getAllBookings); // Get all bookings
 router.get("/:id", getBookingById); // Get a single booking by ID
 router.put("/:id", updateBooking); // Update a booking
-router.delete("/:id", deleteBooking); // Delete a booking
+router.delete("/:id", protect, deleteBooking); // Delete a booking
 router.get("/user/:userId", getAllBookingsByUser);
 
 module.exports = router;

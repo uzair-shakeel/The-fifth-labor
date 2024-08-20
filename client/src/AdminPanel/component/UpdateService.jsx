@@ -46,6 +46,16 @@ const UpdateService = () => {
     setServiceData((prev) => ({ ...prev, subservices: updatedSubservices }));
   };
 
+  const handleAddSubservice = () => {
+    setServiceData((prev) => ({
+      ...prev,
+      subservices: [
+        ...prev.subservices,
+        { name: "", description: "", price: 0 },
+      ],
+    }));
+  };
+
   const handleUpdateService = async (e) => {
     e.preventDefault();
     try {
@@ -68,8 +78,6 @@ const UpdateService = () => {
       const headers = {
         Authorization: `Bearer ${token}`,
       };
-
-      console.log("hehe", formData);
 
       const response = await fetch(`${BASE_URL}/services/${id}`, {
         method: "PUT",
@@ -220,6 +228,13 @@ const UpdateService = () => {
                     </div>
                   </div>
                 ))}
+                <button
+                  type="button"
+                  onClick={handleAddSubservice}
+                  className="btn btn-primary"
+                >
+                  Add Subservice
+                </button>
               </div>
 
               <div className="justify-content-end d-flex">

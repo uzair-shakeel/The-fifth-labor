@@ -88,7 +88,7 @@ const Dashboard = () => {
           </h3>
         </Link>
         <Link
-          to="/orders"
+          to="/bookings"
           className="general-box mt-5 border-2 align-items-center justify-content-center d-flex flex-column shadow-xl col-lg-3 col-md-4"
         >
           <h3>Bookings</h3>
@@ -99,7 +99,7 @@ const Dashboard = () => {
           </h3>
         </Link>
         <Link
-          to="/menu"
+          to="/services"
           className="general-box mt-5 border-2 align-items-center justify-content-center d-flex flex-column shadow-xl col-lg-3 col-md-4"
         >
           <h3>Services</h3>
