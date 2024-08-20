@@ -1,19 +1,13 @@
-// models/Service.js
 const mongoose = require("mongoose");
-
-const SubserviceSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  description: { type: String },
-  price: { type: Number },
-});
 
 const ServiceSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   price: { type: Number, required: true },
-  duration: { type: Number, required: true },
+  discountedPrice: { type: Number },
   imageUrl: { type: String },
-  subservices: [SubserviceSchema], // Array of subservice objects
+  subCategory: { type: String },
+  category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" }, // Reference to Category schema
   createdAt: { type: Date, default: Date.now },
 });
 

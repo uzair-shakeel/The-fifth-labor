@@ -1,6 +1,40 @@
-// controllers/serviceController.js
-
 const Service = require("../models/Service");
+const Category = require("../models/Category");
+
+exports.createService = async (req, res) => {
+  try {
+    const { name, description, price, discountedPrice, category, subCategory } = req.body;
+    const imageUrl = req.file ? req.file.path : null;
+
+    // Validate the category ID
+    const validCategory = await Category.findById(category);
+
+    if (!validCategory) {
+      return res.status(400).json({ message: "Invalid category ID" });
+    }
+
+    // Create a new service object
+    const newService = new Service({
+      name,
+      description,
+      price,
+      discountedPrice,
+      imageUrl,
+      subCategory,
+      category: validCategory._id,
+    });
+
+    const savedService = await newService.save();
+
+    // Add the new service to the category's services array
+    validCategory.services.push(savedService._id);
+    await validCategory.save();
+
+    res.status(201).json(savedService);
+  } catch (error) {
+    res.status(500).json({ message: "Error creating service", error });
+  }
+};
 
 // Function to get all services
 exports.getAllServices = async (req, res) => {
@@ -22,33 +56,6 @@ exports.getServiceById = async (req, res) => {
     res.status(200).json(service);
   } catch (error) {
     res.status(500).json({ message: "Error fetching service" });
-  }
-};
-
-// Create a new service with subservices and image upload
-// controllers/serviceController.js
-
-exports.createService = async (req, res) => {
-  try {
-    console.log("runnnig");
-    const { name, description, price, duration, subservices } = req.body;
-    const imageUrl = req.file ? req.file.path : null;
-
-    // Create a new service object with required fields
-    const newService = new Service({
-      name,
-      description,
-      price,
-      duration,
-      imageUrl,
-      // Include subservices only if provided
-      ...(subservices && { subservices: JSON.parse(subservices) }),
-    });
-
-    const savedService = await newService.save();
-    res.status(201).json(savedService);
-  } catch (error) {
-    res.status(500).json({ message: "Error creating service" });
   }
 };
 
