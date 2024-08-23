@@ -1,14 +1,34 @@
 import React, { useState } from "react";
 import { RxCross2 } from "react-icons/rx";
+import { BASE_URL } from "../../utils/BaseURL";
 
 const ChatbotModal = ({ onClose }) => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    setError("");
+
+    try {
+      const res = await fetch(`${BASE_URL}/messages`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, message }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to send message: ${res.statusText}`);
+      }
+
+      setSubmitted(true);
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -18,7 +38,7 @@ const ChatbotModal = ({ onClose }) => {
           onClick={onClose}
           className="text-gray-400 hover:text-gray-600 float-right"
         >
-          <RxCross2 size={25} />{" "}
+          <RxCross2 size={25} />
         </button>
         {submitted ? (
           <div>
@@ -28,6 +48,7 @@ const ChatbotModal = ({ onClose }) => {
         ) : (
           <form onSubmit={handleSubmit}>
             <h3 className="text-xl font-semibold mb-4">Contact Us</h3>
+            {error && <p className="text-red-500">{error}</p>}
             <div className="mb-4">
               <input
                 type="email"

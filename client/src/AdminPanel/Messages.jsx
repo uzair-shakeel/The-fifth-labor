@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../utils/BaseURL";
-import Avatar from "../../public/avatar.jpg";
-// import updateData from "../hooks/useUpdate";
-// import deleteData from "../hooks/useDelete";
 
 const Users = () => {
+  // Custom hook to fetch data from the API
   const useFetch = (url) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
@@ -25,7 +23,7 @@ const Users = () => {
         }
 
         const result = await res.json();
-        setData(result.data);
+        setData(result);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -40,59 +38,12 @@ const Users = () => {
     return { data, loading, error, fetchData };
   };
 
-  const {
-    data: users,
-    loading,
-    error,
-    fetchData,
-  } = useFetch(`${BASE_URL}/message`);
-  console.log(users);
-  const [usersWithOrderCounts, setUsersWithOrderCounts] = useState([]);
-
-  useEffect(() => {
-    const fetchUsersWithOrderCounts = async () => {
-      try {
-        const usersWithCounts = await Promise.all(
-          users.map(async (user) => {
-            const count = await orderCount(user._id);
-            return { ...user, orderCount: count };
-          })
-        );
-        setUsersWithOrderCounts(usersWithCounts);
-      } catch (err) {
-        console.error(`Failed to fetch order counts for users: ${err.message}`);
-      }
-    };
-
-    if (users.length > 0) {
-      fetchUsersWithOrderCounts();
-    }
-  }, [users]);
-
-  const orderCount = async (userId) => {
-    try {
-      const res = await fetch(`${BASE_URL}/message`, {
-        method: "GET",
-        credentials: "include",
-      });
-
-      if (!res.ok) {
-        throw new Error(
-          `Failed to fetch data. Status: ${res.status} - ${res.statusText}`
-        );
-      }
-
-      const result = await res.json();
-      return result.data.length;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  };
+  // Fetch all messages
+  const { data: messages, loading, error } = useFetch(`${BASE_URL}/messages`);
 
   return (
     <div className="data-box container-fluid pt-4">
-      <div className="row align-item-center justify-content-center">
+      <div className="row align-items-center justify-content-center">
         <h1 className="dashboard-heading">Messages</h1>
         <h5 className="pt-5 mt-3 dashboard-text">All Messages</h5>
         <div className="col-12 table-box">
@@ -102,8 +53,6 @@ const Users = () => {
                 <th scope="col" className="text-center">
                   #
                 </th>
-                <th scope="col">Id</th>
-                <th scope="col">Name</th>
                 <th scope="col">Email</th>
                 <th scope="col">Message</th>
               </tr>
@@ -111,26 +60,23 @@ const Users = () => {
             <tbody>
               {loading && (
                 <tr>
-                  <td colSpan={7}>Loading.......</td>
+                  <td colSpan={4}>Loading.......</td>
                 </tr>
               )}
               {error && (
                 <tr>
-                  <td colSpan={7}>{error}</td>
+                  <td colSpan={4}>{error}</td>
                 </tr>
               )}
               {!loading &&
                 !error &&
-                usersWithOrderCounts?.map((user, index) => (
-                  <tr key={user._id}>
+                messages.map((message, index) => (
+                  <tr key={message._id}>
                     <th scope="row" className="text-center">
                       {index + 1}
                     </th>
-                    <td>{user._id}</td>
-
-                    <td>{user.name}</td>
-                    <td>{user.email}</td>
-                    <td>{user.message}</td>
+                    <td>{message.email}</td>
+                    <td>{message.message}</td>
                   </tr>
                 ))}
             </tbody>

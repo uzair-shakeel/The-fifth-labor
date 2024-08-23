@@ -8,6 +8,7 @@ const {
   updateBooking,
   deleteBooking,
   getAllBookingsByUser,
+  changeStatus,
 } = require("../controllers/bookingController");
 const { protect, admin } = require("../middlewares/authMiddleware");
 
@@ -20,5 +21,6 @@ router.get("/:id", getBookingById); // Get a single booking by ID
 router.put("/:id", updateBooking); // Update a booking
 router.delete("/:id", protect, deleteBooking); // Delete a booking
 router.get("/user/:userId", protect, getAllBookingsByUser);
+router.put("/booking/:bookingId", protect, changeStatus);
 
 module.exports = router;

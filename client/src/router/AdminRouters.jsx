@@ -14,6 +14,7 @@ import UpdateService from "../AdminPanel/component/UpdateService.jsx";
 import Categories from "../AdminPanel/Categories.jsx";
 import CreateCategory from "../AdminPanel/component/CreateCategory.jsx";
 import UpdateCategory from "../AdminPanel/component/UpdateCategory.jsx";
+import BookingDetails from "../AdminPanel/component/bookingDetails.jsx";
 
 const AdminRouters = () => {
   const { user } = useContext(AuthContext);
@@ -31,6 +32,7 @@ const AdminRouters = () => {
       <Route path="/admins" element={<Admins />} />
       <Route path="/createcategory" element={<CreateCategory />} />
       <Route path="/createservice" element={<CreateService />} />
+      <Route path="/booking/:id" element={<BookingDetails />} />
       <Route path="/updatecategory/:id" element={<UpdateCategory />} />
       <Route path="/updateservice/:id" element={<UpdateService />} />
 

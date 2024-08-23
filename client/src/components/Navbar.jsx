@@ -11,6 +11,7 @@ import playStore from "../../public/playstore.png";
 
 const Navbar = ({ openLoginSignupModal, openLoginModal, handleLogout }) => {
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -139,19 +140,21 @@ const Navbar = ({ openLoginSignupModal, openLoginModal, handleLogout }) => {
         </Link>
         {/* Right side: Language, Country Flag, Profile, and Menu */}
         <div className="flex items-center space-x-4">
-          <div className="text-sm">العربية</div>
+          {/* <div className="text-sm">العربية</div>
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/c/cb/Flag_of_the_United_Arab_Emirates.svg"
             alt="UAE Flag"
             className="w-6 h-4"
-          />
+          /> */}
           <Dropdown
             overlayStyle={{ width: "200px" }} // Adjust the width here
             menu={{ items: menuItems }}
           >
             <a onClick={(e) => e.preventDefault()}>
               <Space>
-                <FaUserCircle size={23} />
+                <p className="font-semibold">
+                  {user ? user.name : <FaUserCircle size={23} />}
+                </p>
                 <IoMenu size={30} />
               </Space>
             </a>

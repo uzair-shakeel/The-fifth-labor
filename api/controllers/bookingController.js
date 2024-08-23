@@ -134,3 +134,34 @@ exports.deleteBooking = async (req, res) => {
     res.status(500).json({ message: "Error deleting booking" });
   }
 };
+
+exports.changeStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const { bookingId } = req.params;
+
+    // Check if the status is one of the allowed values
+    if (!["confirmed", "completed", "cancelled"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+
+    // Find the booking by ID and update the status
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      bookingId,
+      { status },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedBooking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    res.status(200).json({
+      message: "Booking status updated successfully",
+      booking: updatedBooking,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error updating booking status" });
+  }
+};

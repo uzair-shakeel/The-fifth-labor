@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../utils/BaseURL";
 import { toast } from "react-hot-toast";
-// import updateData from "../hooks/useUpdate";
+import { FaCheck } from "react-icons/fa6";
+import { RxCross2 } from "react-icons/rx";
+import { Link } from "react-router-dom";
 
 const Orders = () => {
   const [status, setStatus] = useState("");
@@ -65,8 +67,14 @@ const Orders = () => {
       }
 
       const ordersData = await ordersResponse.json();
-      console.log(ordersData);
-      setOrders(ordersData);
+
+      // Filter orders based on status
+      const filteredOrders =
+        status === ""
+          ? ordersData
+          : ordersData.filter((order) => order.status === status);
+
+      setOrders(filteredOrders);
 
       setLoading(false);
     } catch (err) {
@@ -77,20 +85,21 @@ const Orders = () => {
 
   useEffect(() => {
     fetchData();
-  }, [status]);
+  }, [status]); // Re-fetch data when status changes
 
   const handleAction = async (orderId, newStatus) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = JSON.parse(localStorage.getItem("token"));
       if (!token) {
-        throw new Error("Token not found in cookies");
+        throw new Error("Token not found in local storage");
       }
 
       const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       };
-      const response = await fetch(`${BASE_URL}/order/bookings/${orderId}`, {
+
+      const response = await fetch(`${BASE_URL}/bookings/booking/${orderId}`, {
         method: "PUT",
         headers: headers,
         credentials: "include",
@@ -100,26 +109,19 @@ const Orders = () => {
       const { message } = await response.json();
 
       if (!response.ok) {
-        toast.error(message);
+        toast.error(message || "Failed to update status");
         return;
       }
 
       toast.success("Successfully Updated.");
       setTimeout(() => {
-        fetchData();
+        fetchData(); // Refresh the data
       }, 1000);
     } catch (err) {
-      toast.error("Error during updating.");
+      toast.error("Error during updating catch.");
       console.error(err);
     }
   };
-
-  // const handlePayment = (orderId, value) => {
-  //   updateData(`${BASE_URL}/order/paymnet/${orderId}`, "payment", value);
-  //   setTimeout(() => {
-  //     fetchData();
-  //   }, 1000);
-  // };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -138,54 +140,36 @@ const Orders = () => {
           <div className="mt-3">
             <h5 className="dashboard-text">All Orders</h5>
           </div>
-          <div className="d-flex gap-1 mb-1 align-items-end">
+          <div className="d-flex gap-1 mb-1 align-items-end text-white">
             <button
-              className={`filter-btn btn btn-light ${
-                status === "" ? "active" : ""
+              className={`filter-btn btn btn-light  ${
+                status === "" ? "active text-white " : ""
               }`}
-              onClick={() => {
-                setStatus("");
-              }}
+              onClick={() => setStatus("")}
             >
               All
             </button>
             <button
               className={`filter-btn btn btn-light ${
-                status === "pending" ? "active" : ""
+                status === "confirmed" ? "active text-white " : ""
               }`}
-              onClick={() => {
-                setStatus("pending");
-              }}
+              onClick={() => setStatus("confirmed")}
             >
-              Pending
+              Confirmed
             </button>
             <button
               className={`filter-btn btn btn-light ${
-                status === "processing" ? "active" : ""
+                status === "cancelled" ? "active text-white " : ""
               }`}
-              onClick={() => {
-                setStatus("processing");
-              }}
-            >
-              Processing
-            </button>
-            <button
-              className={`filter-btn btn btn-light ${
-                status === "cancelled" ? "active" : ""
-              }`}
-              onClick={() => {
-                setStatus("cancelled");
-              }}
+              onClick={() => setStatus("cancelled")}
             >
               Cancelled
             </button>
             <button
               className={`filter-btn btn btn-light ${
-                status === "completed" ? "active" : ""
+                status === "completed" ? "active text-white " : ""
               }`}
-              onClick={() => {
-                setStatus("completed");
-              }}
+              onClick={() => setStatus("completed")}
             >
               Completed
             </button>
@@ -202,8 +186,8 @@ const Orders = () => {
                 <th scope="col">Items</th>
                 <th scope="col">Address</th>
                 <th scope="col">Total</th>
-                <th scope="col">Payment</th>
                 <th scope="col">Status</th>
+                <th scope="col">Details</th>
                 <th scope="col" className="text-center">
                   Action
                 </th>
@@ -212,17 +196,17 @@ const Orders = () => {
             <tbody>
               {loading && (
                 <tr>
-                  <td colSpan={9}>Loading.......</td>
+                  <td colSpan={7}>Loading.......</td>
                 </tr>
               )}
               {error && (
                 <tr>
-                  <td colSpan={9}>{error}</td>
+                  <td colSpan={7}>{error}</td>
                 </tr>
               )}
               {!loading &&
                 !error &&
-                orders?.map((order, index) => (
+                orders.map((order, index) => (
                   <tr key={order._id}>
                     <th scope="row" className="text-center">
                       {index + 1}
@@ -230,63 +214,36 @@ const Orders = () => {
                     <td>{order?.customer?.name}</td>
                     <td>{formatDate(order?.date)}</td>
                     <td>{order?.time}</td>
-                    <td>{order?.service?.price}</td>
-                    <td>
-                      <select
-                        className="form-select"
-                        value={order?.payment ? "yes" : "no"}
-                        onChange={(e) =>
-                          handlePayment(order?._id, e.target.value)
-                        }
-                      >
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </select>
-                    </td>
+                    <td>{order?.total}</td>
                     <td className="text-uppercase">{order?.status}</td>
+                    <td className="text-uppercase">
+                      <Link to={`/booking/${order._id}`}>
+                        <button className="px-3 py-1 bg-[#00C3FF] hover:bg-[#4cadca] hover:text-white duration-200 rounded-md">
+                          View Details
+                        </button>
+                      </Link>
+                    </td>
                     <td className="text-center">
-                      {order.status === "pending" ? (
+                      {order.status === "confirmed" ? (
                         <>
                           <button
-                            className="btn btn-light action-btn"
-                            onClick={() =>
-                              handleAction(order?._id, "processing")
-                            }
-                            type="button"
-                          >
-                            <i className="ri-truck-line action-icon"></i>
-                          </button>
-                          &nbsp; / &nbsp;
-                          <button
-                            className="btn btn-light action-btn"
-                            onClick={() =>
-                              handleAction(order?._id, "cancelled")
-                            }
-                            type="button"
-                          >
-                            <i className="ri-close-line action-icon"></i>
-                          </button>
-                        </>
-                      ) : order.status === "processing" ? (
-                        <>
-                          <button
-                            className="btn btn-light action-btn"
+                            className="btn btn-light action-btn text-white"
                             onClick={() =>
                               handleAction(order?._id, "completed")
                             }
                             type="button"
                           >
-                            <i className="ri-check-line action-icon"></i>
+                            <FaCheck size={20} />{" "}
                           </button>
                           &nbsp; / &nbsp;
                           <button
-                            className="btn btn-light action-btn"
+                            className="btn btn-light action-btn text-white"
                             onClick={() =>
                               handleAction(order?._id, "cancelled")
                             }
                             type="button"
                           >
-                            <i className="ri-close-line action-icon"></i>
+                            <RxCross2 size={20} />{" "}
                           </button>
                         </>
                       ) : null}

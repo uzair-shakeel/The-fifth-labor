@@ -38,6 +38,7 @@ const Sidebar = () => {
     // dispatch({ type: "LOGOUT" });
     localStorage.clear();
     navigate("/");
+    window.location.reload();
     toast.success("Logout Successfully!");
   };
 
@@ -181,14 +182,14 @@ const Sidebar = () => {
                 </strong>
               </Link>
               <ul className="dropdown-menu dropdown-menu-dark text-small shadow">
-                <li>
+                {/* <li>
                   <NavLink
                     className="dropdown-item"
                     to={`/my-account/${user?._id}`}
                   >
                     Profile
                   </NavLink>
-                </li>
+                </li> */}
                 <li>
                   <hr className="dropdown-divider" />
                 </li>
