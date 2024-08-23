@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "../pages/Home"; // Adjust the path as needed
-import ClientHome from "../ClientPanel/Home"; // Adjust the path as needed
-import Checkout from "../pages/Checkout"; // Adjust the path as needed
-import Profile from "../pages/Profile"; // Adjust the path as needed
+import Home from "../pages/Home";
+import ClientHome from "../ClientPanel/Home";
+import Checkout from "../pages/Checkout";
+import Profile from "../pages/Profile";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import LoginModal from "../components/Modals/Login";
@@ -13,6 +13,8 @@ import MapModal from "../components/Modals/Map";
 import AddressModal from "../components/Modals/Address";
 import BookingsPage from "../pages/Booking";
 import Confirmed from "../pages/Confirmed";
+import PrivateRoute from "../utils/privateRoutes"; // Import the PrivateRoute component
+import Addresses from "../pages/Addresses";
 
 const App = () => {
   const [isLoginSignupOpen, setIsLoginSignupOpen] = useState(false);
@@ -20,6 +22,20 @@ const App = () => {
   const [isVerificationOpen, setIsVerificationOpen] = useState(false);
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [isAddressOpen, setIsAddressOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to manage login status
+
+  // Check localStorage for the token to update isLoggedIn state
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token); // Set to true if token exists, false otherwise
+  }, []);
+
+  // Function to handle login
+  const handleLogin = (token) => {
+    localStorage.setItem("token", token); // Store the token in localStorage
+    setIsLoggedIn(true); // Update the isLoggedIn state to true
+    closeLoginModal(); // Close the login modal
+  };
 
   const openLoginSignupModal = () => setIsLoginSignupOpen(true);
   const closeLoginSignupModal = () => setIsLoginSignupOpen(false);
@@ -30,11 +46,6 @@ const App = () => {
     setIsLoginSignupOpen(false);
     setIsVerificationOpen(true);
   };
-  // const openMapModal = () => {
-  //   setIsLoginSignupOpen(false);
-  //   setIsVerificationOpen(false);
-  //   setIsAddressOpen(true);
-  // };
 
   const openAddressModal = () => {
     setIsLoginSignupOpen(false);
@@ -44,15 +55,25 @@ const App = () => {
 
   const closeVerificationModal = () => setIsVerificationOpen(false);
   const closeAddressModal = () => setIsAddressOpen(false);
-  const closeMapModal = () => openMapModal(false);
+  const closeMapModal = () => setIsMapOpen(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Remove the token from localStorage
+    setIsLoggedIn(false); // Update the state to reflect logout
+  };
 
   return (
     <div>
       <Navbar
         openLoginSignupModal={openLoginSignupModal}
         openLoginModal={openLoginModal}
+        handleLogout={handleLogout}
       />
-      <LoginModal isOpen={isLoginOpen} onClose={closeLoginModal} />
+      <LoginModal
+        isOpen={isLoginOpen}
+        onClose={closeLoginModal}
+        onLogin={handleLogin}
+      />
       <LoginSignupModal
         isOpen={isLoginSignupOpen}
         onClose={closeLoginSignupModal}
@@ -74,11 +95,32 @@ const App = () => {
         openAddressModal={openAddressModal}
       />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/home" element={<ClientHome />} />
+        <Route path="/" element={<ClientHome />} />
         <Route path="/checkout/:id" element={<Checkout />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/bookings" element={<BookingsPage />} />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute isLoggedIn={isLoggedIn}>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/addresses"
+          element={
+            <PrivateRoute isLoggedIn={isLoggedIn}>
+              <Addresses />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/bookings"
+          element={
+            <PrivateRoute isLoggedIn={isLoggedIn}>
+              <BookingsPage />
+            </PrivateRoute>
+          }
+        />
         <Route path="/appointment" element={<Confirmed />} />
       </Routes>
       <Footer />

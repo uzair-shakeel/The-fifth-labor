@@ -11,10 +11,12 @@ const UserDetailsForm = () => {
     name: "",
     dateOfBirth: "",
     email: "",
-    zipcode: "",
-    houseNumber: "",
-    streetNumber: "",
-    city: "",
+    addresses: {
+      zipcode: "",
+      houseNumber: "",
+      streetNumber: "",
+      city: "",
+    },
   });
 
   const fetchUserData = async () => {
@@ -37,13 +39,27 @@ const UserDetailsForm = () => {
   }, []);
 
   const handleChange = (e) => {
-    setUserData({ ...userData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // Check if the input name belongs to the addresses object
+    if (["zipcode", "houseNumber", "streetNumber", "city"].includes(name)) {
+      setUserData({
+        ...userData,
+        addresses: {
+          ...userData.addresses,
+          [name]: value,
+        },
+      });
+    } else {
+      setUserData({ ...userData, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = JSON.parse(localStorage.getItem("token"));
     setLoading(true);
+    console.log(userData);
     try {
       const response = await axios.put(`${BASE_URL}/users/profile`, userData, {
         headers: {
@@ -53,8 +69,7 @@ const UserDetailsForm = () => {
 
       if (response.status === 200) {
         toast.success("Details updated successfully!");
-        // Optionally refetch user data to reflect changes immediately
-        fetchUserData();
+        fetchUserData(); // Optionally refetch user data to reflect changes immediately
       }
     } catch (error) {
       toast.error("Failed to update user details");
@@ -124,24 +139,24 @@ const UserDetailsForm = () => {
             />
           </div>
 
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label className="block text-gray-700">Zipcode</label>
             <input
               type="text"
               name="zipcode"
-              value={userData.zipcode}
+              value={userData.addresses?.zipcode}
               onChange={handleChange}
               className="mt-1 block w-full p-2 border rounded-md"
               required
             />
-          </div>
+          </div> */}
 
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label className="block text-gray-700">House Number</label>
             <input
               type="text"
               name="houseNumber"
-              value={userData.houseNumber}
+              value={userData.addresses?.houseNumber}
               onChange={handleChange}
               className="mt-1 block w-full p-2 border rounded-md"
               required
@@ -153,7 +168,7 @@ const UserDetailsForm = () => {
             <input
               type="text"
               name="streetNumber"
-              value={userData.streetNumber}
+              value={userData.addresses?.streetNumber}
               onChange={handleChange}
               className="mt-1 block w-full p-2 border rounded-md"
               required
@@ -165,12 +180,12 @@ const UserDetailsForm = () => {
             <input
               type="text"
               name="city"
-              value={userData.city}
+              value={userData.addresses?.city}
               onChange={handleChange}
               className="mt-1 block w-full p-2 border rounded-md"
               required
             />
-          </div>
+          </div> */}
         </div>
 
         <div className="mt-6">

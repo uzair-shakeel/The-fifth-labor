@@ -6,7 +6,7 @@ const Hero = () => {
       className="bg-cover bg-center h-screen"
       style={{ backgroundImage: `url(${image})` }}
     >
-      <div className="container mx-auto flex flex-col justify-center items-center h-full text-center">
+      <div className="container max-w-7xl mx-auto flex flex-col justify-center items-center h-full text-center">
         {/* Title */}
         <h1 className="text-5xl font-bold text-gray-800 mb-6">
           #1 Super app for all home services

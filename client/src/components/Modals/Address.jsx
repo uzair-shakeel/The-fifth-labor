@@ -50,7 +50,7 @@ const MapModal = ({ isOpen, onClose }) => {
   const token = JSON.parse(localStorage.getItem("token"));
 
   const handleSave = async () => {
-    const locationData = {
+    const addresses = {
       houseNumber,
       streetNumber,
       city,
@@ -60,7 +60,7 @@ const MapModal = ({ isOpen, onClose }) => {
     try {
       const response = await axios.put(
         `${BASE_URL}/users/profile`,
-        locationData,
+        addresses,
         {
           headers: {
             Authorization: `Bearer ${token}`,

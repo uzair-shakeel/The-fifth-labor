@@ -49,8 +49,8 @@ const Step3Checkout = () => {
             <div className="flex items-center space-x-4">
               <div className="p-4 border rounded-lg">
                 <img
-                  src="/path/to/justlife-logo.jpg"
-                  alt="JustLife Auto Assign"
+                  src="/path/to/The Fifth Labor-logo.jpg"
+                  alt="The Fifth Labor Auto Assign"
                   className="w-16 h-16"
                 />
                 <p className="mt-2 text-center">Auto assign</p>

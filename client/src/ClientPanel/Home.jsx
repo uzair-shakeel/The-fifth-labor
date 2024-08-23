@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import Services from "./components/Services";
@@ -9,9 +9,13 @@ import Footer from "../components/Footer";
 import Banner from "../components/Banner";
 import ChatbotIcon from "../components/Chatbot";
 import ChatbotModal from "../components/Modals/Chatbot";
+import { AuthContext } from "../context/auth-context";
 
 function App() {
   const [isChatbotOpen, setChatbotOpen] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn } = useContext(AuthContext);
+
 
   const handleChatbotOpen = () => {
     setChatbotOpen(true);
@@ -23,18 +27,13 @@ function App() {
 
   return (
     <div>
-      {/* <Navbar openLoginSignupModal={openLoginSignupModal} /> */}
-
-      {/* <Hero /> */}
-      <Services />
+      {isLoggedIn ? <Services /> : <Hero />}
       <TopReasons />
       <Reviews />
       <Banner />
       <Download />
       <ChatbotIcon onClick={handleChatbotOpen} />
-
       {isChatbotOpen && <ChatbotModal onClose={handleChatbotClose} />}
-      {/* <Footer /> */}
     </div>
   );
 }

@@ -35,11 +35,11 @@ const Banner = () => {
         </div>
         <div className="md:w-4/5">
           <h2 className="text-2xl md:text-3xl font-bold mb-4">
-            The Justlife Promise – Excellence in Every Home
+            The The Fifth Labor Promise – Excellence in Every Home
           </h2>
           <p className="text-lg md:text-xl">
-            At Justlife, we commit to the highest standards of home care. Our
-            trained professionals deliver a superior service experience,
+            At The Fifth Labor, we commit to the highest standards of home care.
+            Our trained professionals deliver a superior service experience,
             ensuring your home is in expert hands. Your peace of mind is our
             promise.
           </p>

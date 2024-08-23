@@ -39,8 +39,9 @@ const LoginModal = ({ isOpen, onClose }) => {
         );
         localStorage.setItem("token", JSON.stringify(response?.data?.token));
         {
-          role === "admin" && navigate("/dashboard");
+          role === "admin" ? navigate("/dashboard") : navigate("/");
         }
+
         window.location.reload();
         toast.success("Welcome to The Fifth Labour!");
       } else {

@@ -22,8 +22,11 @@
     "react-leaflet": "^4.2.1",
     "react-leaflet-geosearch": "^0.3.4",
     "react-leaflet-search": "^2.0.1",
+    "react-modal": "^3.16.1",
     "react-router-dom": "^6.26.0",
-    "react-spinners": "^0.14.1"
+    "react-slick": "^0.30.2",
+    "react-spinners": "^0.14.1",
+    "slick-carousel": "^1.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",

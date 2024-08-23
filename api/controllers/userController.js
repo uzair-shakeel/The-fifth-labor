@@ -116,13 +116,12 @@ exports.updateUser = async (req, res) => {
     name,
     email,
     password,
-    houseNumber,
-    streetNumber,
-    city,
-    zipcode,
+    addresses, // Expecting an array of address objects
     dateOfBirth,
     gender,
   } = req.body;
+
+  console.log(req.body);
 
   try {
     const user = await User.findById(userId);
@@ -134,18 +133,19 @@ exports.updateUser = async (req, res) => {
     // Update only the fields that are provided in the request
     user.name = name || user.name;
     user.email = email || user.email;
+
     if (password) {
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
     }
-    user.houseNumber = houseNumber || user.houseNumber;
-    user.streetNumber = streetNumber || user.streetNumber;
-    user.city = city || user.city;
-    user.zipcode = zipcode || user.zipcode;
+
+    if (addresses) {
+      // Update addresses array
+      user.addresses = addresses;
+    }
+
     user.dateOfBirth = dateOfBirth || user.dateOfBirth;
     user.gender = gender || user.gender;
-
-    console.log(user);
 
     await user.save();
 
@@ -153,14 +153,11 @@ exports.updateUser = async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      houseNumber: user.houseNumber,
-      streetNumber: user.streetNumber,
-      city: user.city,
-      zipcode: user.zipcode,
+      addresses: user.addresses,
       dateOfBirth: user.dateOfBirth,
       gender: user.gender,
       isVerified: user.isVerified,
-      isAdmin: user.isAdmin,
+      role: user.role,
     });
   } catch (error) {
     console.error("Error updating user details:", error);
@@ -172,8 +169,8 @@ exports.getUser = async (req, res) => {
   const userId = req.user.id; // Assuming user ID is available in req.user
 
   try {
-    // Find user by ID
-    const user = await User.findById(userId).select("-password"); // Exclude password from response
+    // Find user by ID and exclude password field
+    const user = await User.findById(userId).select("-password");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -183,14 +180,11 @@ exports.getUser = async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      houseNumber: user.houseNumber,
-      streetNumber: user.streetNumber,
-      gender: user.gender,
+      addresses: user.addresses,
       dateOfBirth: user.dateOfBirth,
-      city: user.city,
-      zipcode: user.zipcode,
+      gender: user.gender,
       isVerified: user.isVerified,
-      isAdmin: user.isAdmin,
+      role: user.role,
     });
   } catch (error) {
     console.error("Error fetching user details:", error);
