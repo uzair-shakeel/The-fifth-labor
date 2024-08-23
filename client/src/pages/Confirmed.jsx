@@ -1,7 +1,18 @@
 import React from "react";
 import { FaCheckCircle, FaCalendarAlt, FaClock } from "react-icons/fa";
+import { useLocation } from "react-router-dom";
 
 const Confirmed = () => {
+  const location = useLocation();
+  const { bookingData } = location.state || {}; // Access the passed data
+
+  // Parse bookingData if it's a string (e.g., from session storage)
+  // const bookingData = JSON.parse(location.state?.bookingData || '{}');
+
+  // Format the date and time for display
+  const bookingDate = new Date(bookingData?.date).toLocaleDateString();
+  const bookingTime = bookingData?.time || "Not specified";
+
   return (
     <div className="max-w-md mx-auto p-4 font-sans text-gray-700">
       <div className="text-center mb-6">
@@ -15,8 +26,8 @@ const Confirmed = () => {
           </h3>
         </div>
         <p className="flex items-center text-sm text-gray-600 mb-2">
-          <FaCalendarAlt className="mr-2" /> Saturday &nbsp;
-          <FaClock className="ml-4 mr-2" /> 09:00-11:00
+          <FaCalendarAlt className="mr-2" /> {bookingDate} &nbsp;
+          <FaClock className="ml-4 mr-2" /> {bookingTime}
         </p>
         <p className="text-sm text-gray-700 mb-4">
           Thank you. We'll match you with a top-rated professional. ⭐
@@ -30,24 +41,32 @@ const Confirmed = () => {
         <h3 className="text-lg font-semibold mb-4">Booking Details</h3>
         <div className="text-sm space-y-2">
           <p>
-            <span className="font-semibold">Status:</span> Confirmed
+            <span className="font-semibold">Status:</span>{" "}
+            {bookingData?.status || "Not specified"}
           </p>
           <p>
-            <span className="font-semibold">Reference Code:</span> F22DC9
+            <span className="font-semibold">Reference Code:</span>{" "}
+            {bookingData?._id || "Not available"}
           </p>
           <p>
-            <span className="font-semibold">Service:</span> Laundry and Dry
-            Cleaning
+            <span className="font-semibold">Service:</span>{" "}
+            {bookingData?.services[0]?.name || "Not specified"}
           </p>
           <p>
-            <span className="font-semibold">Date & Time:</span> 24 Aug 2024,
-            09:00-11:00
+            <span className="font-semibold">Date & Time:</span> {bookingDate},{" "}
+            {bookingTime}
           </p>
           <p>
-            <span className="font-semibold">Service Details:</span> Wash & Fold
-            - Home Linens (Upto 15 items): 1, Wash & Iron - Small (Upto 10
-            items): 1, Iron - Medium (11 to 20 items): 1, Jacket - Dry cleaning:
-            1, Trouser - Dry cleaning: 1, Shirt - Dry cleaning: 1
+            <span className="font-semibold">Service Details:</span>{" "}
+            {bookingData?.services[0]?.description || "No details available"}
+          </p>
+          <p>
+            <span className="font-semibold">Total:</span>{" "}
+            {bookingData?.total || "Not specified"}
+          </p>
+          <p>
+            <span className="font-semibold">Address:</span>{" "}
+            {bookingData?.address || "Not specified"}
           </p>
         </div>
         <button className="mt-4 w-full bg-gray-200 text-gray-700 py-2 rounded-lg font-medium">

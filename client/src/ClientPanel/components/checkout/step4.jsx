@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PaymentMethodModal from "../PaymentMethodModal"; // Import the modal component
 
-const Step4 = ({ onNext, onPrevious }) => {
+const Step4 = ({ onNext, onSubmit }) => {
   const [cardNumber, setCardNumber] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
@@ -10,7 +10,7 @@ const Step4 = ({ onNext, onPrevious }) => {
 
   const handleComplete = () => {
     // Handle the complete button click (e.g., validation, submission, etc.)
-    onNext();
+    onSubmit();
   };
 
   const handleInputChange = (e, setter, maxLength, pattern) => {

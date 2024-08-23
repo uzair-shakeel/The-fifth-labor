@@ -19,6 +19,6 @@ router.get("/", getAllBookings); // Get all bookings
 router.get("/:id", getBookingById); // Get a single booking by ID
 router.put("/:id", updateBooking); // Update a booking
 router.delete("/:id", protect, deleteBooking); // Delete a booking
-router.get("/user/:userId", getAllBookingsByUser);
+router.get("/user/:userId", protect, getAllBookingsByUser);
 
 module.exports = router;

@@ -8,7 +8,7 @@ const Footer = () => {
     <footer className="bg-gray-900 text-white py-10">
       <div className="container mx-auto px-4">
         {/* Services Section */}
-        <div className="flex flex-wrap gap-4 mb-8">
+        <div className="flex flex-wrap gap-[8px] mb-8">
           {[
             "Maid Service",
             "Carpet Cleaning",

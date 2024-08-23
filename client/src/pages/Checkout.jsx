@@ -1,13 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import Step1 from "../ClientPanel/components/checkout/step1";
 import Step2 from "../ClientPanel/components/checkout/step2";
 import Step3 from "../ClientPanel/components/checkout/step3";
 import Step4 from "../ClientPanel/components/checkout/step4";
 import AddressModal from "../ClientPanel/components/AddressModal"; // Import the AddressModal component
 import { MdArrowBack } from "react-icons/md";
+import { BASE_URL } from "../utils/BaseURL";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 const Checkout = () => {
   const [step, setStep] = useState(1);
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [showModal, setShowModal] = useState(true); // Initialize modal visibility
   const [userData, setUserData] = useState({
@@ -110,6 +115,27 @@ const Checkout = () => {
     }));
   };
 
+  const submitBooking = async () => {
+    try {
+      const token = JSON.parse(localStorage.getItem("token")); // Retrieve token from localStorage
+      console.log(token);
+      const response = await axios.post(`${BASE_URL}/bookings`, userData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Include the token in the request header
+        },
+      });
+      // Handle success, e.g., show a success message, redirect user, etc.
+      toast.success("Booked successful");
+      console.log("Booked successful", response.data);
+      navigate("/appointment", { state: { bookingData: response.data } });
+    } catch (error) {
+      console.error("Error submitting booking:", error);
+      toast.error("Error submitting booking");
+      // Handle error, e.g., show an error message
+    }
+  };
+
   const renderStep = () => {
     switch (step) {
       case 1:
@@ -147,6 +173,7 @@ const Checkout = () => {
             onBack={handleBack}
             onDataChange={handleDataChange}
             onAddService={onAddService}
+            onSubmit={submitBooking} // Add submit function to Step4
           />
         );
       default:
