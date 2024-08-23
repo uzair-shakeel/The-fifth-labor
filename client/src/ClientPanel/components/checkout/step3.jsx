@@ -45,6 +45,9 @@ const Step3 = ({ onNext, onDataChange }) => {
     }
   }, [selectedDate, selectedTime, onDataChange]);
 
+  // Check if both date and time are selected
+  const isDateTimeSelected = selectedDate && selectedTime;
+
   return (
     <div className="relative w-full max-w-screen-lg bg-white mx-auto">
       {/* Scrollable content */}
@@ -111,7 +114,12 @@ const Step3 = ({ onNext, onDataChange }) => {
       <div className="sticky bottom-0 left-0 right-0 bg-white border-t p-2 border-gray-300">
         <button
           onClick={onNext}
-          className="bg-[#FFD03E] w-full rounded-full text-white px-4 py-2 font-bold"
+          className={`w-full rounded-full text-white px-4 py-2 font-bold ${
+            isDateTimeSelected
+              ? "bg-[#FFD03E]"
+              : "bg-gray-300 cursor-not-allowed"
+          }`}
+          disabled={!isDateTimeSelected}
         >
           Next
         </button>

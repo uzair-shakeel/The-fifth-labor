@@ -58,16 +58,13 @@ const MapModal = ({ isOpen, onClose }) => {
     };
 
     try {
-      const response = await axios.put(
-        `${BASE_URL}/users/profile`,
-        addresses,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      ); // Replace with your actual API endpoint
+      const response = await axios.put(`${BASE_URL}/users/profile`, addresses, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }); // Replace with your actual API endpoint
       if (response.status === 200) {
+        window.location.reload();
         toast.success("Welcome to The Fifth Labour!");
         onClose(); // Close the modal after successful save
       } else {

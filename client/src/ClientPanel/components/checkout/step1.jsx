@@ -78,17 +78,12 @@ const Step1 = ({ onNext, onAddService, onUpdateQuantity, setName }) => {
       const currentQuantity = prev[service._id] || 1;
       const newQuantity = Math.max(currentQuantity - 1, 0);
 
-      console.log(
-        `Service ID: ${service._id}, Current Quantity: ${currentQuantity}, New Quantity: ${newQuantity}`
-      );
-
       // Update quantity first
       onUpdateQuantity(service._id, newQuantity);
 
       if (newQuantity === 0) {
         // If the new quantity is 0, remove the service from the quantities object
         const { [service._id]: _, ...rest } = prev;
-        console.log(`Removing service with ID: ${service._id}`);
         return rest;
       }
 
@@ -99,6 +94,9 @@ const Step1 = ({ onNext, onAddService, onUpdateQuantity, setName }) => {
       };
     });
   };
+
+  // Check if any service has been selected
+  const isServiceSelected = Object.keys(quantities).length > 0;
 
   return (
     <div className="relative w-full max-w-screen-lg bg-white mx-auto">
@@ -158,7 +156,9 @@ const Step1 = ({ onNext, onAddService, onUpdateQuantity, setName }) => {
                         </div>
                         <div className="flex justify-between items-center">
                           <div className="flex gap-3">
-                            <div className="text-md">AED {service.price}</div>
+                            <div className="text-md">
+                              AED {service.discountedPrice}
+                            </div>
                             <div className="text-md text-gray-500 line-through">
                               AED {service.price}
                             </div>
@@ -201,7 +201,12 @@ const Step1 = ({ onNext, onAddService, onUpdateQuantity, setName }) => {
       <div className="sticky bottom-0 left-0 right-0 bg-white border-t p-2 border-gray-300">
         <button
           onClick={onNext}
-          className="bg-[#FFD03E] w-full rounded-full text-white px-4 py-2 font-bold"
+          className={`w-full rounded-full text-white px-4 py-2 font-bold ${
+            isServiceSelected
+              ? "bg-[#FFD03E]"
+              : "bg-gray-300 cursor-not-allowed"
+          }`}
+          disabled={!isServiceSelected}
         >
           Next
         </button>

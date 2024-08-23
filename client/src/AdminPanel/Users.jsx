@@ -3,7 +3,11 @@ import { BASE_URL } from "../utils/BaseURL";
 import Avatar from "../../public/avatar.jpg";
 import updateData from "../hooks/useUpdate";
 import deleteData from "../hooks/useDelete";
+import { MdDelete } from "react-icons/md";
+import { toast } from "react-hot-toast"; // Make sure you have this import for using toast notifications
+
 // import { overwriteMiddlewareResult } from "mongoose";
+import axios from "axios";
 
 const Users = () => {
   const [totalUsers, setTotalUsers] = useState([]);
@@ -99,22 +103,59 @@ const Users = () => {
   //     throw err;
   //   }
   // };
-
   const handleChangeRole = async (userId, value) => {
     try {
-      await updateData(`${BASE_URL}/user/update/${userId}`, "role", value);
-      fetchData(); // Call fetchData directly, no need to pass it as a parameter
+      const token = JSON.parse(localStorage.getItem("token"));
+      if (!token) {
+        throw new Error("Token not found in cookies");
+      }
+
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+
+      const response = await fetch(`${BASE_URL}/users/user-role/${userId}`, {
+        method: "PUT",
+        credentials: "include", // Include credentials if needed
+        headers: headers,
+        body: JSON.stringify({ role: value }), // Include the new role value in the request body
+      });
+
+      const data = await response.json(); // Parse the JSON response
+      console.log(data);
+      if (response.ok) {
+        toast.success(data.message || "Successfully Updated.");
+        // Fetch updated user data
+        fetchData();
+      } else {
+        toast.error(data.message || "Failed to update role.");
+      }
     } catch (err) {
       console.error(err);
+      toast.error("An error occurred while updating the role.");
     }
   };
 
   const handleDelete = async (userId) => {
     try {
-      await deleteData(`${BASE_URL}/user/delete/${userId}`);
-      fetchData(); // Call fetchData directly, no need to pass it as a parameter
+      const token = JSON.parse(localStorage.getItem("token")); // Get the token from localStorage
+
+      await axios.delete(
+        `${BASE_URL}/users/user/${userId}`, // Include the userId in the DELETE request URL
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Include the token in the headers
+          },
+        }
+      );
+
+      toast.success("User deleted successfully"); // Show success toast
+      fetchData(); // Refresh the data after deleting the user
     } catch (err) {
-      console.error(err);
+      console.error("Error deleting user:", err);
+      toast.error("Failed to delete user"); // Show error toast
     }
   };
 
@@ -133,9 +174,9 @@ const Users = () => {
                   </th>
                   <th scope="col">Id</th>
                   <th scope="col">Image</th>
-                  <th scope="col">First Name</th>
+                  <th scope="col">Name</th>
                   <th scope="col">Email</th>
-                  <th scope="col">Orders</th>
+                  {/* <th scope="col">Orders</th> */}
                   <th scope="col">Role</th>
                   <th scope="col" className="text-center">
                     Action
@@ -173,9 +214,9 @@ const Users = () => {
                           alt="profile-img"
                         />
                       </td>
-                      <td>{user.firstName}</td>
+                      <td>{user.name}</td>
                       <td>{user.email}</td>
-                      <td>{user.orderCount}</td>
+                      {/* <td>{user.orderCount}</td> */}
                       <td>
                         <select
                           className="form-select form-options"
@@ -190,11 +231,11 @@ const Users = () => {
                       </td>
                       <td className="text-center">
                         <button
-                          className="btn btn-light action-btn"
+                          className="btn btn-light action-btn text-white"
                           type="button"
                           onClick={() => handleDelete(user._id)}
                         >
-                          <i className="ri-delete-bin-line action-icon delete-icon"></i>
+                          <MdDelete size={25} />
                         </button>
                       </td>
                     </tr>

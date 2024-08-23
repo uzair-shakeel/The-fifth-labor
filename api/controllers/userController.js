@@ -206,3 +206,64 @@ exports.getAllUsers = async (req, res) => {
     res.status(500).json({ message: "Server error. Please try again later." });
   }
 };
+
+exports.deleteUser = async (req, res) => {
+  // const userId = req.user.id; // Assuming user ID is available in req.user
+  const userId = req.params.id; // Assuming user ID is available in req.user
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    await user.deleteOne();
+
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({ message: "Server error. Please try again later." });
+  }
+};
+
+exports.changeUserRole = async (req, res) => {
+  const { id } = req.params; // Get userId from URL parameters
+  const { role } = req.body; // Get the new role from the request body
+  console.log(id);
+
+  try {
+    // Ensure that the role is either "user" or "admin"
+    if (!["user", "admin"].includes(role)) {
+      return res.status(400).json({ message: "Invalid role" });
+    }
+
+    console.log("object");
+
+    // Find the user by ID
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    console.log(user);
+    // Update the user's role
+    user.role = role;
+    console.log(user.role);
+    await user.save();
+
+    res.status(200).json({
+      message: `User role updated to ${role}`,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating user role:", error);
+    res.status(500).json({ message: "Server error. Please try again later." });
+  }
+};

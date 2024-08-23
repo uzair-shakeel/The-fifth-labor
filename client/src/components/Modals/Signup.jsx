@@ -33,11 +33,13 @@ const LoginSignupModal = ({ isOpen, onClose, openVerificationModal }) => {
       });
 
       if (response.status === 201) {
-        console.log("hihi", response);
-        const { name, email, role } = response.data;
+        const { name, email, role, _id } = response.data;
 
         // Store only name and email in localStorage
-        localStorage.setItem("user", JSON.stringify({ name, email, role }));
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ name, email, role, _id })
+        );
         localStorage.setItem("token", JSON.stringify(response?.data?.token));
         toast.success("Registration successful!");
         openVerificationModal(); // Open verification modal or continue with the process

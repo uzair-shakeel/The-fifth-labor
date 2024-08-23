@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../utils/BaseURL"; // Ensure this path is correct
+import { RxCross2 } from "react-icons/rx";
 
 const AddressModal = ({ showModal, setShowModal, onAddressSelect }) => {
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -37,7 +38,8 @@ const AddressModal = ({ showModal, setShowModal, onAddressSelect }) => {
 
   const handleSelect = () => {
     if (selectedAddress) {
-      onAddressSelect(selectedAddress);
+      const formattedAddress = `${selectedAddress.houseNumber} ${selectedAddress.streetNumber}, ${selectedAddress.city}, ${selectedAddress.zipcode}`;
+      onAddressSelect({ description: formattedAddress });
       setShowModal(false);
     }
   };
@@ -47,10 +49,8 @@ const AddressModal = ({ showModal, setShowModal, onAddressSelect }) => {
   };
 
   const handleSaveNewAddress = () => {
-    // Combine address fields into a single string if needed
-    const formattedAddress = `${newAddress.zipcode} ${newAddress.houseNumber} ${newAddress.streetNumber} ${newAddress.city}`;
+    const formattedAddress = `${newAddress.houseNumber} ${newAddress.streetNumber}, ${newAddress.city}, ${newAddress.zipcode}`;
 
-    // Add the new address to userAddresses state
     setUserAddresses([
       ...userAddresses,
       {
@@ -58,11 +58,10 @@ const AddressModal = ({ showModal, setShowModal, onAddressSelect }) => {
         houseNumber: newAddress.houseNumber,
         streetNumber: newAddress.streetNumber,
         city: newAddress.city,
-        formattedAddress, // Optionally include the formatted address if needed
+        description: formattedAddress,
       },
     ]);
 
-    // Reset newAddress state
     setNewAddress({
       zipcode: "",
       houseNumber: "",
@@ -70,16 +69,19 @@ const AddressModal = ({ showModal, setShowModal, onAddressSelect }) => {
       city: "",
     });
 
-    // Hide the address form
     setShowAddressForm(false);
   };
-
 
   return (
     showModal && (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
         <div className="bg-white p-6 rounded-lg w-96">
-          <h2 className="text-xl font-semibold mb-4">Address</h2>
+          <div className="flex justify-between">
+            <h2 className="text-xl font-semibold mb-4">Address</h2>
+            <button onClick={() => setShowModal(false)} className="mb-4">
+              <RxCross2 size={20} />
+            </button>
+          </div>
           <button onClick={handleAddAddress} className="text-blue-500 mb-4">
             + Add New Address
           </button>

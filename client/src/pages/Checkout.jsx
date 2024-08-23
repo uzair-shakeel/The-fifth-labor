@@ -116,9 +116,14 @@ const Checkout = () => {
   };
 
   const submitBooking = async () => {
+    if (!userData.address) {
+      toast.error("Please select an address first.");
+      setShowModal(true); // Show the address modal
+      return;
+    }
+
     try {
       const token = JSON.parse(localStorage.getItem("token")); // Retrieve token from localStorage
-      console.log(token);
       const response = await axios.post(`${BASE_URL}/bookings`, userData, {
         headers: {
           "Content-Type": "application/json",
@@ -126,8 +131,7 @@ const Checkout = () => {
         },
       });
       // Handle success, e.g., show a success message, redirect user, etc.
-      toast.success("Booked successful");
-      console.log("Booked successful", response.data);
+      toast.success("Booking successful");
       navigate("/appointment", { state: { bookingData: response.data } });
     } catch (error) {
       console.error("Error submitting booking:", error);
@@ -182,23 +186,12 @@ const Checkout = () => {
   };
 
   return (
-    <div className="px-14 py-4 bg-gray-50">
+    <div className="px-14 py-4 bg-gray-50 max-w-7xl mx-auto">
       {showModal && (
         <AddressModal
           showModal={showModal}
           setShowModal={setShowModal}
           onAddressSelect={onAddressSelect}
-          userAddresses={[
-            {
-              label: "Home",
-              description:
-                "Sadaf 3 - King Salman Bin Abdulaziz Al Saud St - Jumeirah Beach",
-            },
-            {
-              label: "Work",
-              description: "Downtown Dubai - Sheikh Mohammed bin Rashid Blvd",
-            },
-          ]}
         />
       )}
       <div className="flex gap-1 items-center font-semibold mb-2">

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../utils/BaseURL";
 import Avatar from "../../public/avatar.jpg";
-// import updateData from "../hooks/useUpdate";
-// import deleteData from "../hooks/useDelete";
 import { toast } from "react-hot-toast";
+import { MdDelete } from "react-icons/md";
+import axios from "axios";
 
 const Admins = () => {
   const [totalAdmins, setTotalAdmins] = useState([]);
@@ -61,8 +61,7 @@ const Admins = () => {
 
   const handleChangeRole = async (adminId, value) => {
     try {
-      // Make the API call to update the role to 'user'
-      const token = localStorage.getItem("token");
+      const token = JSON.parse(localStorage.getItem("token"));
       if (!token) {
         throw new Error("Token not found in cookies");
       }
@@ -71,17 +70,26 @@ const Admins = () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       };
-      await fetch(`${BASE_URL}/user/updateRoleToUser/${adminId}`, {
+
+      const response = await fetch(`${BASE_URL}/users/user-role/${adminId}`, {
         method: "PUT",
         credentials: "include", // Include credentials if needed
         headers: headers,
-        body: JSON.stringify({ role: "user" }), // Include the new role value in the request body
+        body: JSON.stringify({ role: value }), // Include the new role value in the request body
       });
-      toast.success("Successfully Updated.");
-      // Fetch updated user data
-      fetchData();
+
+      const data = await response.json(); // Parse the JSON response
+      console.log(data);
+      if (response.ok) {
+        toast.success(data.message || "Successfully Updated.");
+        // Fetch updated user data
+        fetchData();
+      } else {
+        toast.error(data.message || "Failed to update role.");
+      }
     } catch (err) {
       console.error(err);
+      toast.error("An error occurred while updating the role.");
     }
   };
 
@@ -92,14 +100,27 @@ const Admins = () => {
     }
   }, [admins]);
 
-  // const handleDelete = async (adminId) => {
-  //   try {
-  //     await deleteData(`${BASE_URL}/user/delete/${adminId}`);
-  //     fetchData(); // Call fetchData directly, no need to pass it as a parameter
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
+  const handleDelete = async (userId) => {
+    try {
+      const token = JSON.parse(localStorage.getItem("token")); // Get the token from localStorage
+
+      await axios.delete(
+        `${BASE_URL}/users/user/${userId}`, // Include the userId in the DELETE request URL
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Include the token in the headers
+          },
+        }
+      );
+
+      toast.success("User deleted successfully"); // Show success toast
+      fetchData(); // Refresh the data after deleting the user
+    } catch (err) {
+      console.error("Error deleting user:", err);
+      toast.error("Failed to delete user"); // Show error toast
+    }
+  };
 
   return (
     <div className="data-box container-fluid pt-4 ">
@@ -115,7 +136,7 @@ const Admins = () => {
                 </th>
                 <th scope="col">Id</th>
                 <th scope="col">Image</th>
-                <th scope="col">Username</th>
+                <th scope="col">Name</th>
                 <th scope="col">Email</th>
                 <th scope="col">Role</th>
                 <th scope="col" className="text-center">
@@ -145,7 +166,7 @@ const Admins = () => {
                     <td>
                       <img
                         src={admin.photo || Avatar}
-                        className="profileimg img-fluid rounded-circle border border-2"
+                        className="profileimg img-fluid rounded-circle border-2"
                         style={{
                           width: "60px",
                           height: "60px",
@@ -154,7 +175,7 @@ const Admins = () => {
                         alt="profile-img"
                       />
                     </td>
-                    <td>{admin.firstName}</td>
+                    <td>{admin.name}</td>
                     <td>{admin.email}</td>
                     <td>
                       <select
@@ -170,11 +191,11 @@ const Admins = () => {
                     </td>
                     <td className="text-center">
                       <button
-                        className="btn btn-light action-btn"
+                        className="btn btn-light action-btn text-white"
                         type="button"
                         onClick={() => handleDelete(admin._id)}
                       >
-                        <i className="ri-delete-bin-line action-icon delete-icon"></i>
+                        <MdDelete size={25} />
                       </button>
                     </td>
                   </tr>

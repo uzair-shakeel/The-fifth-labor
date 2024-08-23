@@ -1,6 +1,7 @@
 import React from "react";
 import { FaCheckCircle, FaCalendarAlt, FaClock } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
+import popper from "../../public/party_popper.gif";
 
 const Confirmed = () => {
   const location = useLocation();
@@ -19,7 +20,7 @@ const Confirmed = () => {
         <h2 className="text-xl font-bold">🎉 Order Placed</h2>
       </div>
 
-      <div className="bg-gray-50 p-4 rounded-lg border mb-6">
+      <div className="bg-gray-50 p-4  rounded-lg border mb-6">
         <div className="flex items-center justify-between mb-2">
           <h3 className="text-lg font-semibold text-green-600 flex items-center">
             Confirmed <FaCheckCircle className="ml-2 text-xl" />
@@ -32,9 +33,9 @@ const Confirmed = () => {
         <p className="text-sm text-gray-700 mb-4">
           Thank you. We'll match you with a top-rated professional. ⭐
         </p>
-        <button className="w-full bg-yellow-200 text-yellow-800 py-2 rounded-lg font-medium">
+        <span className="w-full bg-yellow-200 flex text-center justify-center text-yellow-800 p-2 mx-auto rounded-lg font-medium">
           Share a beverage with them
-        </button>
+        </span>
       </div>
 
       <div className="bg-white p-4 rounded-lg border">
@@ -69,9 +70,11 @@ const Confirmed = () => {
             {bookingData?.address || "Not specified"}
           </p>
         </div>
-        <button className="mt-4 w-full bg-gray-200 text-gray-700 py-2 rounded-lg font-medium">
-          Manage This Booking
-        </button>
+        <Link to="/">
+          <button className="mt-4 w-full bg-gray-200 text-gray-700 py-2 rounded-lg font-medium">
+            Go to the Home Page
+          </button>
+        </Link>
       </div>
     </div>
   );
