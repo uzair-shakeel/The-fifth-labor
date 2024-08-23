@@ -10,7 +10,9 @@ const Navbar = ({ openLoginSignupModal, openLoginModal }) => {
     <nav className="bg-white shadow-md">
       <div className="container mx-auto py-2 px-2  flex justify-between items-center">
         {/* Logo */}
-        <img src={logo} className="h-14 w-auto bg-black" />
+        <Link to={"/home"}>
+          <img src={logo} className="h-14 w-auto bg-black" />
+        </Link>
         {/* Right side: Language, Country Flag, Profile, and Menu */}
         <div className="flex items-center space-x-4">
           <div className="text-sm">العربية</div>
@@ -51,6 +53,10 @@ const Navbar = ({ openLoginSignupModal, openLoginModal }) => {
                 {
                   key: "3",
                   label: <Link to="/profile">Profile</Link>,
+                },
+                {
+                  key: "4",
+                  label: <Link to="/bookings">Bookings</Link>,
                 },
               ],
             }}

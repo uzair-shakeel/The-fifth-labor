@@ -4,11 +4,13 @@ import toast, { Toaster } from "react-hot-toast";
 import { BASE_URL } from "../../utils/BaseURL";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import { RxCross2 } from "react-icons/rx";
+import { useNavigate } from "react-router-dom";
 
 const LoginModal = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   if (!isOpen) return null;
 
@@ -33,6 +35,10 @@ const LoginModal = ({ isOpen, onClose }) => {
         // Store only name and email in localStorage
         localStorage.setItem("user", JSON.stringify({ name, email, role }));
         localStorage.setItem("token", JSON.stringify(response?.data?.token));
+        {
+          role === "admin" && navigate("/dashboard");
+        }
+        window.location.reload();
         toast.success("Welcome to The Fifth Labour!");
       } else {
         toast.error(response.data.message);

@@ -23,7 +23,7 @@ const deleteData = async (url) => {
     }
 
     const result = await res.json();
-    toast.info(result.message);
+    toast.success(result.message);
     setTimeout(() => {
       window.location.reload();
     }, 1000);

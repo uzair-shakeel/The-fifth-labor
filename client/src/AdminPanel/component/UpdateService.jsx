@@ -8,16 +8,23 @@ const UpdateService = () => {
   const { id } = useParams();
   const {
     data: service,
-    loading,
-    error,
+    loading: serviceLoading,
+    error: serviceError,
   } = useFetch(`${BASE_URL}/services/${id}`);
+
+  const {
+    data: categories,
+    loading: categoriesLoading,
+    error: categoriesError,
+  } = useFetch(`${BASE_URL}/categories`);
 
   const [serviceData, setServiceData] = useState({
     name: "",
     description: "",
     price: 0,
-    duration: 0,
-    subservices: [],
+    discountedPrice: 0,
+    category: "",
+    subCategory: "",
   });
 
   const [imageFile, setImageFile] = useState(null);
@@ -29,31 +36,16 @@ const UpdateService = () => {
         name: service.name || "",
         description: service.description || "",
         price: service.price || 0,
-        duration: service.duration || 0,
-        subservices: service.subservices || [],
+        discountedPrice: service.discountedPrice || 0,
+        category: service.category || "",
+        subCategory: service.subCategory || "",
       });
-      setImageUrl(service.imageUrl || ""); // Set the initial image URL
+      setImageUrl(service.imageUrl || "");
     }
   }, [service]);
 
   const handleChange = (e) => {
     setServiceData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const handleSubserviceChange = (index, field, value) => {
-    const updatedSubservices = [...serviceData.subservices];
-    updatedSubservices[index][field] = value;
-    setServiceData((prev) => ({ ...prev, subservices: updatedSubservices }));
-  };
-
-  const handleAddSubservice = () => {
-    setServiceData((prev) => ({
-      ...prev,
-      subservices: [
-        ...prev.subservices,
-        { name: "", description: "", price: 0 },
-      ],
-    }));
   };
 
   const handleUpdateService = async (e) => {
@@ -68,8 +60,9 @@ const UpdateService = () => {
       formData.append("name", serviceData.name);
       formData.append("description", serviceData.description);
       formData.append("price", serviceData.price);
-      formData.append("duration", serviceData.duration);
-      formData.append("subservices", JSON.stringify(serviceData.subservices));
+      formData.append("discountedPrice", serviceData.discountedPrice);
+      formData.append("category", serviceData.category);
+      formData.append("subCategory", serviceData.subCategory);
 
       if (imageFile) {
         formData.append("image", imageFile);
@@ -103,7 +96,7 @@ const UpdateService = () => {
     const file = e.target.files[0];
     if (file) {
       setImageFile(file);
-      setImageUrl(URL.createObjectURL(file)); // Show the new image preview
+      setImageUrl(URL.createObjectURL(file));
     }
   };
 
@@ -113,12 +106,14 @@ const UpdateService = () => {
         <div className="row">
           <div className="col-12 shadow-lg rounded-2">
             <form>
-              <h1 className="text-center mb-5 mt-3">Update The Service</h1>
+              <h1 className="text-center mb-5 mt-3 font-semibold text-2xl">
+                Update The Service
+              </h1>
               {/* Image Upload Section */}
               <div className="flex items-center justify-center input-fields mb-3">
                 <div className="mb-3 h-[150px] w-[200px] shadow-md overflow-hidden">
                   <img
-                    src={imageUrl} // Always display the current image
+                    src={imageUrl}
                     alt="Service"
                     className="w-full h-full object-cover cursor-pointer rounded-lg"
                     onClick={() =>
@@ -134,6 +129,8 @@ const UpdateService = () => {
                   onChange={handleImageUpload}
                 />
               </div>
+
+              {/* Service Details Section */}
               <div className="input-fields input-group mb-3 d-flex flex-column flex-sm-row gap-3 gap-md-0">
                 <div className="d-flex flex-grow-1">
                   <span className="input-group-text">Service name:</span>
@@ -146,29 +143,8 @@ const UpdateService = () => {
                     onChange={handleChange}
                   />
                 </div>
-                <div className="d-flex flex-grow-1">
-                  <span className="input-group-text">Duration (minutes):</span>
-                  <input
-                    type="number"
-                    name="duration"
-                    value={serviceData.duration}
-                    className="form-control"
-                    placeholder="Duration of the service"
-                    onChange={handleChange}
-                  />
-                </div>
               </div>
-              <div className="input-fields input-group mb-3">
-                <span className="input-group-text">Price:</span>
-                <input
-                  type="number"
-                  name="price"
-                  value={serviceData.price}
-                  className="form-control"
-                  placeholder="Price of the service"
-                  onChange={handleChange}
-                />
-              </div>
+
               <div className="input-fields input-group mb-3">
                 <span className="input-group-text">Description:</span>
                 <textarea
@@ -181,60 +157,61 @@ const UpdateService = () => {
                 />
               </div>
 
-              {/* Subservices Section */}
-              <div className="input-fields mb-3">
-                <h5>Subservices:</h5>
-                {serviceData.subservices.map((subservice, index) => (
-                  <div key={index} className="mb-3">
-                    <div className="input-group mb-2">
-                      <span className="input-group-text">Name:</span>
-                      <input
-                        type="text"
-                        value={subservice.name}
-                        className="form-control"
-                        placeholder={`Subservice ${index + 1} Name`}
-                        onChange={(e) =>
-                          handleSubserviceChange(index, "name", e.target.value)
-                        }
-                      />
-                    </div>
-                    <div className="input-group mb-2">
-                      <span className="input-group-text">Description:</span>
-                      <input
-                        type="text"
-                        value={subservice.description}
-                        className="form-control"
-                        placeholder={`Subservice ${index + 1} Description`}
-                        onChange={(e) =>
-                          handleSubserviceChange(
-                            index,
-                            "description",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </div>
-                    <div className="input-group mb-2">
-                      <span className="input-group-text">Price:</span>
-                      <input
-                        type="number"
-                        value={subservice.price}
-                        className="form-control"
-                        placeholder={`Subservice ${index + 1} Price`}
-                        onChange={(e) =>
-                          handleSubserviceChange(index, "price", e.target.value)
-                        }
-                      />
-                    </div>
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={handleAddSubservice}
-                  className="btn btn-primary"
+              <div className="input-fields input-group mb-3 d-flex flex-column flex-sm-row gap-3 gap-md-0">
+                <div className="d-flex flex-grow-1">
+                  <span className="input-group-text">Price:</span>
+                  <input
+                    type="number"
+                    name="price"
+                    value={serviceData.price}
+                    className="form-control"
+                    placeholder="Price of the service"
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="d-flex flex-grow-1">
+                  <span className="input-group-text">Discounted Price:</span>
+                  <input
+                    type="number"
+                    name="discountedPrice"
+                    value={serviceData.discountedPrice}
+                    className="form-control"
+                    placeholder="Discounted Price of the service"
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              <div className="input-fields input-group mb-3">
+                <span className="input-group-text">Category:</span>
+                <select
+                  name="category"
+                  value={serviceData.category}
+                  className="form-control"
+                  onChange={handleChange}
                 >
-                  Add Subservice
-                </button>
+                  <option value="" disabled>
+                    Select Category
+                  </option>
+                  {categories &&
+                    categories.map((category) => (
+                      <option key={category._id} value={category._id}>
+                        {category.name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+
+              <div className="input-fields input-group mb-3">
+                <span className="input-group-text">Subcategory:</span>
+                <input
+                  type="text"
+                  name="subCategory"
+                  value={serviceData.subCategory}
+                  className="form-control"
+                  placeholder="Subcategory of the service"
+                  onChange={handleChange}
+                />
               </div>
 
               <div className="justify-content-end d-flex">

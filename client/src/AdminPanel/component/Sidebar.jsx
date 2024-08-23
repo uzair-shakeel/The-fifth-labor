@@ -1,14 +1,21 @@
 import React, { useState, useEffect, useContext } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import weblogo from "../../../public/whiteLogo.png";
 import Avatar from "../../../public/avatar.jpg";
 import { toast } from "react-hot-toast";
 import "./sidebar.css";
 import { AuthContext } from "../../context/AuthContext";
+import { MdDashboard } from "react-icons/md";
+import { GrServices } from "react-icons/gr";
+import { RiReservedFill, RiAdminFill } from "react-icons/ri";
+import { FaUsers, FaExpandAlt } from "react-icons/fa";
+import { BiSolidMessageSquareDetail, BiSolidCategory } from "react-icons/bi";
+import { ImShrink2 } from "react-icons/im";
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { user, dispatch } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleToggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -28,7 +35,10 @@ const Sidebar = () => {
   }, []);
 
   const logout = () => {
-    dispatch({ type: "LOGOUT" });
+    // dispatch({ type: "LOGOUT" });
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/");
     toast.success("Logout Successfully!");
   };
 
@@ -42,17 +52,17 @@ const Sidebar = () => {
         }`}
       ></div>
       <div
-        className={`d-flex sidebar-wrapper flex-column text-bg-dark align-items-between h-100 sidebar wrapper ${
+        className={`d-flex sidebar-wrapper flex-column text-bg-dark align-items-between h-[100px] sidebar wrapper ${
           isCollapsed ? "collapsed-sidebar p-1" : "p-3"
         }`}
         style={{ zIndex: 10 }}
       >
         <button
-          className="btn text-white collapse-btn align-item-center justify-content-center ms-1 my-auto"
+          className="btn text-white collapse-btn justify-center flex  align-item-center ms-1 my-auto"
           onClick={handleToggleCollapse}
           style={{ maxWidth: "70px" }}
         >
-          <i className={`ri-menu-${isCollapsed ? "unfold" : "fold"}-line`}></i>
+          {isCollapsed ? <FaExpandAlt size={25} /> : <ImShrink2 size={25} />}
         </button>
         <div className="navigation-section">
           <Link
@@ -78,59 +88,68 @@ const Sidebar = () => {
             <li className="nav-item admin-nav-items">
               <Link
                 to="/dashboard"
-                className="nav-link sidebar-link text-white"
+                className="nav-link flex items-center gap-2 sidebar-link text-white"
                 aria-current="page"
               >
-                <i
-                  className={`ri-dashboard-line ${isCollapsed ? "" : "pe-2"}`}
-                ></i>
+                <MdDashboard size={25} />
+
                 {isCollapsed ? "" : "Dashboard"}
               </Link>
             </li>
             <li className="nav-item admin-nav-items">
-              <Link to="/services" className="nav-link sidebar-link text-white">
-                <i
-                  className={`ri-restaurant-line ${isCollapsed ? "" : "pe-2"}`}
-                ></i>
+              <Link
+                to="/categories"
+                className="nav-link flex items-center gap-2 sidebar-link text-white"
+              >
+                <BiSolidCategory size={25} />
+
+                {isCollapsed ? "" : "Categories"}
+              </Link>
+            </li>
+            <li className="nav-item admin-nav-items">
+              <Link
+                to="/services"
+                className="nav-link flex items-center gap-2 sidebar-link text-white"
+              >
+                <GrServices size={25} />
+
                 {isCollapsed ? "" : "Services"}
               </Link>
             </li>
             <li className="nav-item admin-nav-items">
-              <Link to="/bookings" className="nav-link sidebar-link text-white">
-                <i
-                  className={`ri-calendar-2-fill ${isCollapsed ? "" : "pe-2"}`}
-                ></i>
+              <Link
+                to="/bookings"
+                className="nav-link flex items-center gap-2 sidebar-link text-white"
+              >
+                <RiReservedFill size={25} />
                 {isCollapsed ? "" : "Bookings"}
               </Link>
             </li>
             <li className="nav-item admin-nav-items">
-              <Link to="/users" className="nav-link sidebar-link text-white">
-                <i className={`ri-group-line ${isCollapsed ? "" : "pe-2"}`}></i>
+              <Link
+                to="/users"
+                className="nav-link flex items-center gap-2 sidebar-link text-white"
+              >
+                <FaUsers size={25} />
                 {isCollapsed ? "" : "Users"}
               </Link>
             </li>
-            <li className="nav-item admin-nav-items">
-              <Link to="/messages" className="nav-link sidebar-link text-white">
-                <i
-                  className={`ri-chat-2-line ${isCollapsed ? "" : "pe-2"}`}
-                ></i>
+            <li className="nav-item  admin-nav-items">
+              <Link
+                to="/messages"
+                className="nav-link flex items-center gap-2 sidebar-link text-white"
+              >
+                <BiSolidMessageSquareDetail size={25} />
                 {isCollapsed ? "" : "Messages"}
               </Link>
             </li>
-            {/* <li className="nav-item admin-nav-items">
-              <Link
-                to="/feedbacks"
-                className="nav-link sidebar-link text-white"
-              >
-                <i
-                  className={`ri-feedback-line ${isCollapsed ? "" : "pe-2"}`}
-                ></i>
-                {isCollapsed ? "" : "Feedbacks"}
-              </Link>
-            </li> */}
+
             <li className="nav-item admin-nav-items">
-              <Link to="/admins" className="nav-link sidebar-link text-white">
-                <i className={`ri-admin-line ${isCollapsed ? "" : "pe-2"}`}></i>
+              <Link
+                to="/admins"
+                className="nav-link flex items-center gap-2 sidebar-link text-white"
+              >
+                <RiAdminFill size={25} />
                 {isCollapsed ? "" : "Admins"}
               </Link>
             </li>

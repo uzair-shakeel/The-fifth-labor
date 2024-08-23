@@ -229,21 +229,21 @@ const Orders = () => {
                     </th>
                     <td>{order?.customer?.name}</td>
                     <td>{formatDate(order?.date)}</td>
-                    <td>{order.time}</td>
-                    <td>{order.service.price}</td>
+                    <td>{order?.time}</td>
+                    <td>{order?.service?.price}</td>
                     <td>
                       <select
                         className="form-select"
-                        value={order.payment ? "yes" : "no"}
+                        value={order?.payment ? "yes" : "no"}
                         onChange={(e) =>
-                          handlePayment(order._id, e.target.value)
+                          handlePayment(order?._id, e.target.value)
                         }
                       >
                         <option value="yes">Yes</option>
                         <option value="no">No</option>
                       </select>
                     </td>
-                    <td className="text-uppercase">{order.status}</td>
+                    <td className="text-uppercase">{order?.status}</td>
                     <td className="text-center">
                       {order.status === "pending" ? (
                         <>

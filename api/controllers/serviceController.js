@@ -3,7 +3,8 @@ const Category = require("../models/Category");
 
 exports.createService = async (req, res) => {
   try {
-    const { name, description, price, discountedPrice, category, subCategory } = req.body;
+    const { name, description, price, discountedPrice, category, subCategory } =
+      req.body;
     const imageUrl = req.file ? req.file.path : null;
 
     // Validate the category ID
@@ -62,19 +63,35 @@ exports.getServiceById = async (req, res) => {
 // Update an existing service with new subservices and image upload
 exports.updateService = async (req, res) => {
   try {
-    const { name, description, price, duration, subservices } = req.body;
-    let updatedData = { name, description, price, duration };
+    const { name, description, price, discountedPrice, category, subCategory } =
+      req.body;
 
+    let updatedData = {
+      name,
+      description,
+      price,
+      discountedPrice,
+      subCategory,
+    };
+
+    // Validate the category ID
+    if (category) {
+      const validCategory = await Category.findById(category);
+
+      if (!validCategory) {
+        return res.status(400).json({ message: "Invalid category ID" });
+      }
+
+      updatedData.category = validCategory._id;
+    }
+
+    // Handle image upload
     if (req.file) {
       console.log("File received:", req.file); // Log file details
       updatedData.imageUrl = req.file.path; // Save the image path
     }
 
-    if (subservices) {
-      console.log("Subservices received:", subservices); // Log subservices
-      updatedData.subservices = JSON.parse(subservices); // Convert JSON string to object
-    }
-
+    // Update the service
     const updatedService = await Service.findByIdAndUpdate(
       req.params.id,
       updatedData,
@@ -83,6 +100,23 @@ exports.updateService = async (req, res) => {
 
     if (!updatedService) {
       return res.status(404).json({ message: "Service not found" });
+    }
+
+    // If the category has been updated, also update the category's services list
+    if (category) {
+      const previousCategory = await Category.findById(updatedService.category);
+      if (previousCategory) {
+        previousCategory.services = previousCategory.services.filter(
+          (serviceId) => serviceId.toString() !== updatedService._id.toString()
+        );
+        await previousCategory.save();
+      }
+
+      const newCategory = await Category.findById(category);
+      if (newCategory) {
+        newCategory.services.push(updatedService._id);
+        await newCategory.save();
+      }
     }
 
     res.json({

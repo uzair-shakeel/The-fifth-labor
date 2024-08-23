@@ -9,8 +9,7 @@ router.post("/", upload.single("image"), categoryController.createCategory);
 // Route to update a category with a new image
 router.put("/:id", upload.single("image"), categoryController.updateCategory);
 
-// Route to get all categories
-// router.get("/", categoryController.getAllCategories);
+router.get("/categories", categoryController.getAllCategories);
 router.get("/", categoryController.getCategoriesWithServices); // Get all categories with services
 router.get("/:id", categoryController.getCategoryWithServices);
 

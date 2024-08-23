@@ -1,4 +1,3 @@
-// models/Booking.js
 const mongoose = require("mongoose");
 
 const BookingSchema = new mongoose.Schema({
@@ -7,17 +6,18 @@ const BookingSchema = new mongoose.Schema({
     ref: "User", // Assuming you have a User model
     required: true,
   },
-  service: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Service",
-    required: true,
-  },
+
+  address: { type: String }, // Added address field
+  services: [{ type: mongoose.Schema.Types.ObjectId, ref: "Service" }], // List of services, assuming Service is a model
+  category: { type: String }, // Details about the service
+  total: { type: String, default: "AED 0.00" }, // Default value
   date: { type: Date, required: true },
   time: { type: String }, // e.g., "10:00 AM"
+  description: { type: String },
   status: {
     type: String,
-    enum: ["Pending", "Confirmed", "Completed", "Cancelled"],
-    default: "Pending",
+    enum: ["confirmed", "completed", "cancelled"],
+    default: "confirmed",
   },
   notes: { type: String }, // Optional notes from the customer
   createdAt: { type: Date, default: Date.now },

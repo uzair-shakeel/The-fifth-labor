@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "../pages/Home"; // Adjust the path as needed
+import ClientHome from "../ClientPanel/Home"; // Adjust the path as needed
 import Checkout from "../pages/Checkout"; // Adjust the path as needed
 import Profile from "../pages/Profile"; // Adjust the path as needed
 import Navbar from "../components/Navbar";
@@ -11,6 +12,7 @@ import VerificationModal from "../components/Modals/Verfication";
 import MapModal from "../components/Modals/Map";
 import AddressModal from "../components/Modals/Address";
 import BookingsPage from "../pages/Booking";
+import Confirmed from "../pages/Confirmed";
 
 const App = () => {
   const [isLoginSignupOpen, setIsLoginSignupOpen] = useState(false);
@@ -73,9 +75,11 @@ const App = () => {
       />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/home" element={<ClientHome />} />
+        <Route path="/checkout/:id" element={<Checkout />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/bookings" element={<BookingsPage />} />
+        <Route path="/appointment" element={<Confirmed />} />
       </Routes>
       <Footer />
     </div>
