@@ -43,7 +43,7 @@ app.use("/api/messages", messagesRoutes);
 app.post("/api/payment/checkout", async (req, res) => {
   try {
     const stripe = new Stripe(process.env.SECRET_STRIPE_KEY);
-    const { services } = req.body;
+  const { id, services } = req.body;
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -62,7 +62,7 @@ app.post("/api/payment/checkout", async (req, res) => {
       }),
       // success_url: "http://localhost:5173/bookings",
 
-      success_url: "http://localhost:5173/appointment/{CHECKOUT_SESSION_ID}",
+success_url: `http://localhost:5173/checkout/${id}/step-4?session_id={CHECKOUT_SESSION_ID}`,
 
       cancel_url: "http://localhost:5173/",
     });

@@ -7,8 +7,10 @@ import Step4 from "../ClientPanel/components/checkout/step4";
 import AddressModal from "../ClientPanel/components/AddressModal"; // Import the AddressModal component
 import { MdArrowBack } from "react-icons/md";
 import { BASE_URL } from "../utils/BaseURL";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { useParams, useLocation } from "react-router-dom";
+
 // import { loadStripe } from "@stripe/stripe-js";
 
 // const stripePromise = loadStripe(
@@ -16,7 +18,14 @@ import { toast } from "react-hot-toast";
 // );
 
 const Checkout = () => {
-  const [step, setStep] = useState(1);
+  const [searchParams] = useSearchParams();
+  const sessionId = searchParams.get("session_id");
+  const stepFromPath = location.pathname.split("/").pop();
+  const currentStep = parseInt(stepFromPath.replace("step-", ""), 10) || 1;
+  const { id } = useParams();
+  const [step, setStep] = useState(currentStep);
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [completeLoading, setCompleteLoading] = useState(false);
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [showModal, setShowModal] = useState(true); // Initialize modal visibility
@@ -30,18 +39,21 @@ const Checkout = () => {
   });
   const [loading, setLoading] = useState(true);
   const [paymentStatus, setPaymentStatus] = useState(null);
+  const [selectedMethod, setSelectedMethod] = useState("card");
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(window.location.search);
-    const sessionId = queryParams.get("session_id");
+    setStep(currentStep);
+  }, [currentStep]);
 
+  useEffect(() => {
     if (sessionId) {
-      // Fetch the session details from your backend
-      axios.get(`/api/payment/session/${sessionId}`).then((response) => {
-        setPaymentStatus(response.data.status);
-      });
-      console
-        .log("stripeee", response)
+      axios
+        .get(`${BASE_URL}/payment/session/${sessionId}`)
+        .then((response) => {
+          setPaymentStatus(response.data.status);
+          const Booking = JSON.parse(localStorage.getItem("booking"));
+          setUserData(Booking);
+        })
         .catch((error) => {
           console.error("Error fetching payment status:", error);
         })
@@ -51,7 +63,7 @@ const Checkout = () => {
     } else {
       setLoading(false);
     }
-  }, []);
+  }, [sessionId]);
 
   const titles = [
     "Service Details",
@@ -145,14 +157,74 @@ const Checkout = () => {
   };
 
   const submitBooking = async () => {
-    // e.preventDefault();
+    if (selectedMethod === "card") {
+      // If paymentStatus is not "paid", show an error and exit the function
+      if (!paymentStatus || paymentStatus !== "paid") {
+        toast.error(
+          "Please complete the payment before submitting the booking."
+        );
+        setCompleteLoading(false);
+        return; // Exit the function if payment is not complete
+      }
+    }
+
+    // Check if address is selected
     if (!userData.address) {
       toast.error("Please select an address first.");
       setShowModal(true); // Show the address modal
+      setCompleteLoading(false);
       return;
     }
 
+    try {
+      // Retrieve token from localStorage
+      const token = JSON.parse(localStorage.getItem("token"));
+
+      // Submit booking request
+      const response = await axios.post(`${BASE_URL}/bookings`, userData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Include the token in the request header
+        },
+      });
+
+      toast.success("Booking successful");
+      navigate("/appointment", { state: { bookingData: response.data } });
+      setCompleteLoading(false);
+    } catch (error) {
+      console.error("Error submitting booking:", error);
+      toast.error("Error submitting booking");
+    }
+  };
+
+  const handlePayment = async () => {
+    // Validate request data
+    if (!id) {
+      toast.error("ID is missing.");
+      setPaymentLoading(false);
+      return; // Stop execution if ID is missing
+    }
+
+    if (!userData || typeof userData !== "object") {
+      toast.error("User data is missing or invalid.");
+      setPaymentLoading(false);
+      return; // Stop execution if userData is missing or invalid
+    }
+
+    if (!userData.address) {
+      toast.error("Please select an address.");
+      setPaymentLoading(false);
+      return; // Stop execution if address is missing
+    }
+
+    if (!Array.isArray(userData.services) || userData.services.length === 0) {
+      toast.error("Please add at least one service.");
+      setPaymentLoading(false);
+      return; // Stop execution if services array is empty
+    }
+    localStorage.setItem("booking", JSON.stringify(userData));
     const requestBody = {
+      id,
       services: userData.services.map((item) => ({
         id: item._id,
         price: item.discountedPrice,
@@ -160,6 +232,7 @@ const Checkout = () => {
         quantity: item.quantity,
       })),
     };
+
     try {
       // Send request to initiate checkout
       const res = await fetch(`${BASE_URL}/payment/checkout`, {
@@ -171,6 +244,7 @@ const Checkout = () => {
         mode: "cors",
         body: JSON.stringify(requestBody),
       });
+
       // Check if the response is okay
       if (!res.ok) {
         throw new Error(`Failed to initiate checkout: ${res.statusText}`);
@@ -191,24 +265,6 @@ const Checkout = () => {
       // Display user-friendly error message
       toast.error("An error occurred during checkout. Please try again later.");
     }
-
-    // try {
-    //   const token = JSON.parse(localStorage.getItem("token")); // Retrieve token from localStorage
-    //   console.log("hihi", userData);
-    //   const response = await axios.post(`${BASE_URL}/bookings`, userData, {
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: `Bearer ${token}`, // Include the token in the request header
-    //     },
-    //   });
-    //   // Handle success, e.g., show a success message, redirect user, etc.
-    //   toast.success("Booking successful");
-    //   navigate("/appointment", { state: { bookingData: response.data } });
-    // } catch (error) {
-    //   console.error("Error submitting booking:", error);
-    //   toast.error("Error submitting booking");
-    //   // Handle error, e.g., show an error message
-    // }
   };
 
   const renderStep = () => {
@@ -249,6 +305,13 @@ const Checkout = () => {
             onDataChange={handleDataChange}
             onAddService={onAddService}
             onSubmit={submitBooking} // Add submit function to Step4
+            onPayment={handlePayment}
+            setPaymentLoading={setPaymentLoading}
+            paymentLoading={paymentLoading}
+            completeLoading={completeLoading}
+            setCompleteLoading={setCompleteLoading}
+            setSelectedMethod={setSelectedMethod}
+            selectedMethod={selectedMethod}
           />
         );
       default:

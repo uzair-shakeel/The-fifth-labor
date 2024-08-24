@@ -96,7 +96,12 @@ const App = () => {
       />
       <Routes>
         <Route path="/" element={<ClientHome />} />
-        <Route path="/checkout/:id" element={<Checkout />} />
+        {/* <Route path="/checkout/:id" element={<Checkout step={1} />} /> */}
+        <Route path="/checkout/:id/step-1" element={<Checkout step={1} />} />
+        <Route path="/checkout/:id/step-2" element={<Checkout step={2} />} />
+        <Route path="/checkout/:id/step-3" element={<Checkout step={3} />} />
+        <Route path="/checkout/:id/step-4" element={<Checkout step={4} />} />
+
         <Route
           path="/profile"
           element={
@@ -121,7 +126,7 @@ const App = () => {
             </PrivateRoute>
           }
         />
-        <Route path="/appointment/:id" element={<Confirmed />} />
+        <Route path="/appointment" element={<Confirmed />} />
       </Routes>
       <Footer />
     </div>

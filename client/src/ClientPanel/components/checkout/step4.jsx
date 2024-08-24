@@ -1,16 +1,31 @@
 import React, { useState } from "react";
 import PaymentMethodModal from "../PaymentMethodModal"; // Import the modal component
+import ScaleLoader from "react-spinners/ScaleLoader";
 
-const Step4 = ({ onNext, onSubmit }) => {
+const Step4 = ({
+  onNext,
+  onSubmit,
+  onPayment,
+  setPaymentLoading,
+  paymentLoading,
+  completeLoading,
+  setCompleteLoading,
+  selectedMethod,
+  setSelectedMethod,
+}) => {
   const [cardNumber, setCardNumber] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedMethod, setSelectedMethod] = useState("card");
 
   const handleComplete = () => {
-    // Handle the complete button click (e.g., validation, submission, etc.)
+    setCompleteLoading(true);
     onSubmit();
+  };
+
+  const handlePayment = () => {
+    setPaymentLoading(true);
+    onPayment();
   };
 
   const handleInputChange = (e, setter, maxLength, pattern) => {
@@ -20,7 +35,7 @@ const Step4 = ({ onNext, onSubmit }) => {
     }
   };
 
-  const handleSelectMethod = (method) => {
+  const handleSelectMethod = async (method) => {
     setSelectedMethod(method);
     setIsModalOpen(false);
   };
@@ -38,21 +53,40 @@ const Step4 = ({ onNext, onSubmit }) => {
             Change
           </button>
         </div>
-        <div className="flex items-center gap-3 mt-2 p-3 border-2 rounded-lg bg-blue-100">
-          <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center">
-            {/* Credit Card Icon */}
-            <i className="fas fa-credit-card"></i>
+        <div className="flex items-center justify-between gap-3 mt-2 p-3 border-2 rounded-lg bg-blue-100">
+          <div className="flex gap-3 items-center">
+            <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center">
+              {/* Credit Card Icon */}
+              <i className="fas fa-credit-card"></i>
+            </div>
+            <div className="text-lg font-semibold">
+              {selectedMethod === "card"
+                ? "Credit / Debit Card"
+                : "Cash (+5 AED)"}
+            </div>
           </div>
-          <div className="text-lg font-semibold">
-            {selectedMethod === "card"
-              ? "Credit / Debit Card"
-              : "Cash (+5 AED)"}
-          </div>
+          {selectedMethod === "card" && (
+            <button
+              onClick={handlePayment}
+              disabled={paymentLoading}
+              className="h-[40px] w-[120px] flex items-center justify-center bg-blue-500 text-white font-bold rounded-md"
+            >
+              {!paymentLoading ? (
+                "Pay Now"
+              ) : (
+                <ScaleLoader
+                  color={"#fff"}
+                  className="h-[2px] w-auto mb-3"
+                  height={15}
+                />
+              )}
+            </button>
+          )}
         </div>
       </div>
 
       {/* Conditional Rendering for Card Details */}
-      {selectedMethod === "card" && (
+      {/* {selectedMethod === "card" && (
         <div className="space-y-4">
           <div>
             <input
@@ -89,7 +123,7 @@ const Step4 = ({ onNext, onSubmit }) => {
             />
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Information Boxes */}
       <div className="mt-4 space-y-2">
@@ -109,9 +143,18 @@ const Step4 = ({ onNext, onSubmit }) => {
       <div className="mt-6">
         <button
           onClick={handleComplete}
+          disabled={completeLoading}
           className="w-full bg-yellow-400 text-white py-2 px-4 rounded-full font-bold"
         >
-          Complete
+          {!completeLoading ? (
+            "Complete"
+          ) : (
+            <ScaleLoader
+              color={"#fff"}
+              className="h-[2px] w-auto mb-3"
+              height={15}
+            />
+          )}
         </button>
       </div>
 

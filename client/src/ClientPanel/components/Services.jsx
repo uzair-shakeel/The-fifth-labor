@@ -47,7 +47,7 @@ const CleaningServices = () => {
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {services.map((service, index) => (
           <Link
-            to={`/checkout/${service._id}`}
+            to={`/checkout/${service._id}/step-1`}
             key={index}
             className="flex flex-col items-center group"
           >
