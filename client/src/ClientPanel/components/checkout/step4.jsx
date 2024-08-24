@@ -12,6 +12,7 @@ const Step4 = ({
   setCompleteLoading,
   selectedMethod,
   setSelectedMethod,
+  paymentStatus,
 }) => {
   const [cardNumber, setCardNumber] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
@@ -68,11 +69,17 @@ const Step4 = ({
           {selectedMethod === "card" && (
             <button
               onClick={handlePayment}
-              disabled={paymentLoading}
-              className="h-[40px] w-[120px] flex items-center justify-center bg-blue-500 text-white font-bold rounded-md"
+              disabled={paymentLoading || paymentStatus === 'paid'}
+              className={`h-[40px] w-[120px] flex items-center justify-center ${
+                paymentStatus === "paid" ? "bg-green-500" : "bg-blue-500"
+              }  text-white font-bold rounded-md`}
             >
               {!paymentLoading ? (
-                "Pay Now"
+                paymentStatus === "paid" ? (
+                  "Paid"
+                ) : (
+                  "Pay Now"
+                )
               ) : (
                 <ScaleLoader
                   color={"#fff"}

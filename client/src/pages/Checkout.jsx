@@ -28,7 +28,7 @@ const Checkout = () => {
   const [completeLoading, setCompleteLoading] = useState(false);
   const navigate = useNavigate();
   const [name, setName] = useState("");
-  const [showModal, setShowModal] = useState(true); // Initialize modal visibility
+  const [showModal, setShowModal] = useState(false); // Initialize modal visibility
   const [userData, setUserData] = useState({
     address: "",
     services: [],
@@ -64,6 +64,12 @@ const Checkout = () => {
       setLoading(false);
     }
   }, [sessionId]);
+
+  useEffect(() => {
+    if (currentStep !== 4) {
+      setShowModal(true);
+    }
+  }, []);
 
   const titles = [
     "Service Details",
@@ -312,6 +318,7 @@ const Checkout = () => {
             setCompleteLoading={setCompleteLoading}
             setSelectedMethod={setSelectedMethod}
             selectedMethod={selectedMethod}
+            paymentStatus={paymentStatus}
           />
         );
       default:
