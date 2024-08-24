@@ -98,11 +98,11 @@ const Step2 = ({ onNext, onAddService, onUpdateQuantity, userData }) => {
                     <div className="flex justify-between items-center mt-4 mb-8">
                       <div>
                         <span className="text-md font-semibold">
-                          AED {addon.price}
+                          AED {addon.discountedPrice}
                         </span>
-                        {addon.discountedPrice && (
+                        {addon.price && (
                           <span className="text-gray-400 line-through ml-2">
-                            AED {addon.discountedPrice}
+                            AED {addon.price}
                           </span>
                         )}
                       </div>

@@ -121,7 +121,7 @@ const App = () => {
             </PrivateRoute>
           }
         />
-        <Route path="/appointment" element={<Confirmed />} />
+        <Route path="/appointment/:id" element={<Confirmed />} />
       </Routes>
       <Footer />
     </div>

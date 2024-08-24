@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Step1 from "../ClientPanel/components/checkout/step1";
 import Step2 from "../ClientPanel/components/checkout/step2";
@@ -9,6 +9,11 @@ import { MdArrowBack } from "react-icons/md";
 import { BASE_URL } from "../utils/BaseURL";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+// import { loadStripe } from "@stripe/stripe-js";
+
+// const stripePromise = loadStripe(
+//   "sk_test_51PGNqOP8GLeLec0dZwYS3mn0w1CUODT2kG1W6NZfuUYau2VVKDPEF6QnGoQLEPsDizkMewRO5bRkGljVJ5Vox3ue00Cl0RuWw4"
+// );
 
 const Checkout = () => {
   const [step, setStep] = useState(1);
@@ -23,6 +28,30 @@ const Checkout = () => {
     date: "",
     total: "AED 0.00",
   });
+  const [loading, setLoading] = useState(true);
+  const [paymentStatus, setPaymentStatus] = useState(null);
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const sessionId = queryParams.get("session_id");
+
+    if (sessionId) {
+      // Fetch the session details from your backend
+      axios.get(`/api/payment/session/${sessionId}`).then((response) => {
+        setPaymentStatus(response.data.status);
+      });
+      console
+        .log("stripeee", response)
+        .catch((error) => {
+          console.error("Error fetching payment status:", error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
+    }
+  }, []);
 
   const titles = [
     "Service Details",
@@ -96,7 +125,7 @@ const Checkout = () => {
       }
 
       const updatedTotal = updatedServices.reduce(
-        (total, item) => total + item.price * item.quantity,
+        (total, item) => total + item.discountedPrice * item.quantity,
         0
       );
 
@@ -116,28 +145,70 @@ const Checkout = () => {
   };
 
   const submitBooking = async () => {
+    // e.preventDefault();
     if (!userData.address) {
       toast.error("Please select an address first.");
       setShowModal(true); // Show the address modal
       return;
     }
 
+    const requestBody = {
+      services: userData.services.map((item) => ({
+        id: item._id,
+        price: item.discountedPrice,
+        name: item.name,
+        quantity: item.quantity,
+      })),
+    };
     try {
-      const token = JSON.parse(localStorage.getItem("token")); // Retrieve token from localStorage
-      const response = await axios.post(`${BASE_URL}/bookings`, userData, {
+      // Send request to initiate checkout
+      const res = await fetch(`${BASE_URL}/payment/checkout`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Include the token in the request header
         },
+        credentials: "include",
+        mode: "cors",
+        body: JSON.stringify(requestBody),
       });
-      // Handle success, e.g., show a success message, redirect user, etc.
-      toast.success("Booking successful");
-      navigate("/appointment", { state: { bookingData: response.data } });
+      // Check if the response is okay
+      if (!res.ok) {
+        throw new Error(`Failed to initiate checkout: ${res.statusText}`);
+      }
+
+      // Parse response data
+      const data = await res.json();
+
+      // Check if the response contains the URL for redirection
+      if (!data.url) {
+        throw new Error("No redirection URL found in the response");
+      }
+
+      console.log(data);
+      window.location = data.url;
     } catch (error) {
-      console.error("Error submitting booking:", error);
-      toast.error("Error submitting booking");
-      // Handle error, e.g., show an error message
+      console.error("Error during checkout:", error.message);
+      // Display user-friendly error message
+      toast.error("An error occurred during checkout. Please try again later.");
     }
+
+    // try {
+    //   const token = JSON.parse(localStorage.getItem("token")); // Retrieve token from localStorage
+    //   console.log("hihi", userData);
+    //   const response = await axios.post(`${BASE_URL}/bookings`, userData, {
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `Bearer ${token}`, // Include the token in the request header
+    //     },
+    //   });
+    //   // Handle success, e.g., show a success message, redirect user, etc.
+    //   toast.success("Booking successful");
+    //   navigate("/appointment", { state: { bookingData: response.data } });
+    // } catch (error) {
+    //   console.error("Error submitting booking:", error);
+    //   toast.error("Error submitting booking");
+    //   // Handle error, e.g., show an error message
+    // }
   };
 
   const renderStep = () => {
