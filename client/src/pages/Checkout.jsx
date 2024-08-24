@@ -11,12 +11,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useParams, useLocation } from "react-router-dom";
 
-// import { loadStripe } from "@stripe/stripe-js";
-
-// const stripePromise = loadStripe(
-//   "sk_test_51PGNqOP8GLeLec0dZwYS3mn0w1CUODT2kG1W6NZfuUYau2VVKDPEF6QnGoQLEPsDizkMewRO5bRkGljVJ5Vox3ue00Cl0RuWw4"
-// );
-
 const Checkout = () => {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
