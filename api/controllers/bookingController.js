@@ -13,6 +13,9 @@ exports.createBooking = async (req, res) => {
       date,
       time,
       description,
+      hours,
+      professional,
+      cleaningMaterial,
       notes,
     } = req.body;
 
@@ -31,6 +34,9 @@ exports.createBooking = async (req, res) => {
       services, // Directly use the array of service objects
       category,
       total,
+      hours,
+      professional,
+      cleaningMaterial,
       date,
       time,
       description,

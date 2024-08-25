@@ -16,6 +16,7 @@ const BookingDetails = () => {
           credentials: "include",
         });
         const data = await response.json();
+        console.log("data", data);
 
         if (!response.ok) {
           throw new Error(data.message || "Failed to fetch booking details.");
@@ -95,6 +96,7 @@ const BookingDetails = () => {
               </p>
               <p>{service.quantity}</p>
             </div>
+
             <div className="col-md-4">
               <p>
                 <strong>Sub-Category:</strong>
@@ -104,12 +106,40 @@ const BookingDetails = () => {
           </div>
         ))}
         <div className="row mb-4">
-          <div className="col-md-6">
-            <p>
-              <strong>Category:</strong>
-            </p>
-            <p>{booking.category}</p>
-          </div>
+          {booking.category && (
+            <div className="col-md-6">
+              <p>
+                <strong>Category:</strong>
+              </p>
+              <p>{booking.category}</p>
+            </div>
+          )}
+
+          {booking.hours && (
+            <div className="col-md-6">
+              <p>
+                <strong>Hours:</strong>
+              </p>
+              <p>{booking.hours} hours</p>
+            </div>
+          )}
+          {booking.professional && (
+            <div className="col-md-6">
+              <p>
+                <strong>Professional:</strong>
+              </p>
+              <p>{booking.professional}</p>
+            </div>
+          )}
+          {booking.cleaningMaterial && (
+            <div className="col-md-6">
+              <p>
+                <strong>Cleaning Material:</strong>
+              </p>
+              <p>{booking.cleaningMaterial === true ? "Yes" : "No"}</p>
+            </div>
+          )}
+
           <div className="col-md-6">
             <p>
               <strong>Total:</strong>

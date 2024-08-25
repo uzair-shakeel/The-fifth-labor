@@ -30,6 +30,9 @@ const Checkout = () => {
     time: "",
     date: "",
     total: "AED 0.00",
+    hours: "", // Add these fields
+    professional: "",
+    cleaningMaterial: "",
   });
   const [loading, setLoading] = useState(true);
   const [paymentStatus, setPaymentStatus] = useState(null);
@@ -80,11 +83,36 @@ const Checkout = () => {
     setStep((prev) => Math.max(prev - 1, 1));
   };
 
+  const calculateTotal = (services, hours, professionals) => {
+    return services.reduce((total, item) => {
+      const itemTotal = item.discountedPrice * item.quantity;
+
+      const multiplier =
+        (hours ? hours : 1) * (professionals ? professionals : 1);
+
+      return total + itemTotal * multiplier;
+    }, 0);
+  };
+
   const handleDataChange = (newData) => {
-    setUserData((prevData) => ({
-      ...prevData,
-      ...newData,
-    }));
+    setUserData((prevData) => {
+      const updatedData = {
+        ...prevData,
+        ...newData,
+      };
+
+      // Calculate the total using the new or existing hours and professionals value
+      const updatedTotal = calculateTotal(
+        updatedData.services,
+        updatedData.hours,
+        updatedData.professional
+      );
+
+      return {
+        ...updatedData,
+        total: `AED ${updatedTotal}.00`,
+      };
+    });
   };
 
   const handleUpdateQuantity = (serviceId, newQuantity) => {
@@ -104,7 +132,7 @@ const Checkout = () => {
       }
 
       const updatedTotal = updatedServices.reduce(
-        (total, item) => total + item.price * item.quantity,
+        (total, item) => total + item.discountedPrice * item.quantity,
         0
       );
 
@@ -136,10 +164,11 @@ const Checkout = () => {
         ];
       }
 
-      const updatedTotal = updatedServices.reduce(
-        (total, item) => total + item.discountedPrice * item.quantity,
-        0
-      );
+      // Update total price calculation to include the number of hours
+      const updatedTotal = updatedServices.reduce((total, item) => {
+        const hours = parseFloat(prevData.hours) || 1; // Default to 1 hour if not provided
+        return total + item.discountedPrice * item.quantity * hours;
+      }, 0);
 
       return {
         ...prevData,
@@ -277,6 +306,7 @@ const Checkout = () => {
             onAddService={onAddService}
             onUpdateQuantity={handleUpdateQuantity}
             setName={setName}
+            name={name}
           />
         );
       case 2:
@@ -296,6 +326,7 @@ const Checkout = () => {
             onBack={handleBack}
             onDataChange={handleDataChange}
             onAddService={onAddService}
+            serviceType={name}
           />
         );
       case 4:
@@ -345,6 +376,53 @@ const Checkout = () => {
         <div className="lg:col-span-2 bg-white border-gray-500 border p-4 rounded-3xl">
           {renderStep()}
         </div>
+        {/* <div className="lg:col-span-1 text-sm bg-white border-gray-500 border p-4 rounded-3xl">
+          <h3 className="text-2xl font-bold mb-4">Booking Details</h3>
+
+          <p className="mb-2 flex justify-between">
+            <span className="text-left">Address:</span>
+            <strong className="text-right">
+              {userData.address || "Not provided"}
+            </strong>
+          </p>
+
+          <p className="mb-2 flex justify-between">
+            <span className="text-left">Service</span>
+            <strong className="text-right">{name || "Not provided"}</strong>
+          </p>
+
+          {userData?.services?.map((service, index) => (
+            <div key={index} className="mb-2">
+              <p className="flex justify-between">
+                <span className="text-left">Service Details {index + 1}:</span>
+                <strong className="text-right">
+                  <span className="font-[600]">{service.quantity} </span> x{" "}
+                  {service.name} - {service.subCategory}
+                </strong>
+              </p>
+            </div>
+          ))}
+
+          <p className="mb-2 flex justify-between">
+            <span className="text-left">Date</span>
+            <strong className="text-right">
+              {userData.date || "Not selected"}
+            </strong>
+          </p>
+          <p className="mb-2 flex justify-between">
+            <span className="text-left">Time</span>
+            <strong className="text-right">
+              {userData.time || "Not selected"}
+            </strong>
+          </p>
+
+          <h3 className="text-2xl font-bold mt-10 mb-4">Payment Summary</h3>
+
+          <p className="flex justify-between">
+            <span className="text-left font-bold">Total:</span>
+            <strong className="text-right">{userData.total}</strong>
+          </p>
+        </div> */}
         <div className="lg:col-span-1 text-sm bg-white border-gray-500 border p-4 rounded-3xl">
           <h3 className="text-2xl font-bold mb-4">Booking Details</h3>
 
@@ -384,6 +462,32 @@ const Checkout = () => {
               {userData.time || "Not selected"}
             </strong>
           </p>
+
+          {/* New fields */}
+          {name === "Home Cleaning" && (
+            <>
+              <p className="mb-2 flex justify-between">
+                <span className="text-left">Hours:</span>
+                <strong className="text-right">
+                  {userData.hours || "Not provided"}
+                </strong>
+              </p>
+              <p className="mb-2 flex justify-between">
+                <span className="text-left">Professionals:</span>
+                <strong className="text-right">
+                  {userData.professional || "Not provided"}
+                </strong>
+              </p>
+              <p className="mb-2 flex justify-between">
+                <span className="text-left">Cleaning Material:</span>
+                <strong className="text-right">
+                  {userData?.cleaningMaterial === true
+                    ? "Yes"
+                    : "No" || "Not provided"}
+                </strong>
+              </p>
+            </>
+          )}
 
           <h3 className="text-2xl font-bold mt-10 mb-4">Payment Summary</h3>
 

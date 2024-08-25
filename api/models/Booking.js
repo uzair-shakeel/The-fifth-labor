@@ -20,6 +20,9 @@ const BookingSchema = new mongoose.Schema({
   address: { type: String },
   services: [ServiceSchema], // Array of service objects
   category: { type: String }, // Details about the service
+  hours: { type: String },
+  professional: { type: String },
+  cleaningMaterial: { type: String },
   total: { type: String, default: "AED 0.00" }, // Default value
   date: { type: Date, required: true },
   time: { type: String }, // e.g., "10:00 AM"

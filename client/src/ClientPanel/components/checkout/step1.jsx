@@ -4,7 +4,7 @@ import { BASE_URL } from "../../../utils/BaseURL";
 import { FaPlus, FaMinus } from "react-icons/fa6";
 import { useParams } from "react-router-dom";
 
-const Step1 = ({ onNext, onAddService, onUpdateQuantity, setName }) => {
+const Step1 = ({ onNext, onAddService, onUpdateQuantity, setName, name }) => {
   const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [quantities, setQuantities] = useState({});
@@ -163,22 +163,29 @@ const Step1 = ({ onNext, onAddService, onUpdateQuantity, setName }) => {
                               AED {service.price}
                             </div>
                           </div>
+
                           {quantities[service._id] ? (
-                            <div className="flex items-center gap-3">
-                              <button
-                                onClick={() => handleDecreaseQuantity(service)}
-                                className="bg-[#FF3E3E] p-2 rounded-full text-white cursor-pointer"
-                              >
-                                <FaMinus />
-                              </button>
-                              <span>{quantities[service._id]}</span>
-                              <button
-                                onClick={() => handleIncreaseQuantity(service)}
-                                className="bg-[#00C3FF] p-2 rounded-full text-white cursor-pointer"
-                              >
-                                <FaPlus />
-                              </button>
-                            </div>
+                            name === "Home Cleaning" ? null : (
+                              <div className="flex items-center gap-3">
+                                <button
+                                  onClick={() =>
+                                    handleDecreaseQuantity(service)
+                                  }
+                                  className="bg-[#FF3E3E] p-2 rounded-full text-white cursor-pointer"
+                                >
+                                  <FaMinus />
+                                </button>
+                                <span>{quantities[service._id]}</span>
+                                <button
+                                  onClick={() =>
+                                    handleIncreaseQuantity(service)
+                                  }
+                                  className="bg-[#00C3FF] p-2 rounded-full text-white cursor-pointer"
+                                >
+                                  <FaPlus />
+                                </button>
+                              </div>
+                            )
                           ) : (
                             <button
                               onClick={() => handleAddService(service)}

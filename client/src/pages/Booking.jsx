@@ -90,8 +90,7 @@ const BookingsPage = () => {
                   </h2>
                   <span className="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">
                     {booking.status.charAt(0).toUpperCase() +
-                      booking.status.slice(1)}{" "}
-                    {/* Dynamic status display */}
+                      booking.status.slice(1)}
                   </span>
                 </div>
                 <p className="text-gray-600">
@@ -107,6 +106,17 @@ const BookingsPage = () => {
                 <p className="text-gray-600 mb-4">
                   <strong>Total:</strong> {booking.total}
                 </p>
+                {/* Conditionally render hours and professionals */}
+                {booking.hours && (
+                  <p className="text-gray-600">
+                    <strong>Hours:</strong> {booking.hours}
+                  </p>
+                )}
+                {booking.professional && (
+                  <p className="text-gray-600">
+                    <strong>Professional:</strong> {booking.professional}
+                  </p>
+                )}
                 <div className="flex items-center">
                   <span className="inline-block bg-blue-100 text-[#00C3FF] text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">
                     {booking.type || "One-off"}
