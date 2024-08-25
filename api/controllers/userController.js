@@ -267,3 +267,42 @@ exports.changeUserRole = async (req, res) => {
     res.status(500).json({ message: "Server error. Please try again later." });
   }
 };
+
+exports.resendVerificationEmail = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // Find the user by email
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if the user is already verified
+    if (user.isVerified) {
+      return res.status(400).json({ message: "User is already verified" });
+    }
+
+    // Generate a new verification code
+    const newVerificationCode = Math.floor(
+      1000 + Math.random() * 9000
+    ).toString();
+    user.verificationCode = newVerificationCode;
+
+    // Save the updated user with the new verification code
+    await user.save();
+
+    // Send the verification email
+    await sendEmail(
+      user.email,
+      "Resend: Please verify your email",
+      newVerificationCode
+    );
+
+    res.status(200).json({ message: "Verification email resent successfully" });
+  } catch (error) {
+    console.error("Error resending verification email:", error);
+    res.status(500).json({ message: "Server error. Please try again later." });
+  }
+};

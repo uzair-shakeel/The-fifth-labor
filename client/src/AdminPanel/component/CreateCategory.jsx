@@ -8,6 +8,7 @@ const CreateCategory = () => {
   const [categoryData, setCategoryData] = useState({
     name: "",
     description: "",
+    image: null, // Add image to the state
   });
 
   const navigate = useNavigate();
@@ -20,11 +21,23 @@ const CreateCategory = () => {
     }));
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setCategoryData((prev) => ({
+      ...prev,
+      image: file,
+    }));
+  };
+
   const handleCreateCategory = async (e) => {
     e.preventDefault();
 
-    if (!categoryData.name || !categoryData.description) {
-      toast.error("Please fill in all required fields.");
+    if (
+      !categoryData.name ||
+      !categoryData.description ||
+      !categoryData.image
+    ) {
+      toast.error("Please fill in all required fields, including the image.");
       return;
     }
 
@@ -34,13 +47,17 @@ const CreateCategory = () => {
         throw new Error("Token not found in cookies");
       }
 
+      const formData = new FormData();
+      formData.append("name", categoryData.name);
+      formData.append("description", categoryData.description);
+      formData.append("image", categoryData.image); // Append image file
+
       const response = await fetch(`${BASE_URL}/categories`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(categoryData),
+        body: formData, // Use FormData for the request body
       });
 
       const { message } = await response.json();
@@ -90,6 +107,17 @@ const CreateCategory = () => {
                   className="form-control"
                   placeholder="Description of the category"
                   onChange={handleChange}
+                />
+              </div>
+
+              <div className="input-fields input-group mb-3">
+                <span className="input-group-text">Upload Image:</span>
+                <input
+                  type="file"
+                  name="image"
+                  className="form-control"
+                  onChange={handleImageChange}
+                  accept="image/*" // Restrict to image files
                 />
               </div>
 

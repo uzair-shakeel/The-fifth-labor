@@ -9,6 +9,7 @@ const {
   getUser,
   deleteUser,
   changeUserRole,
+  resendVerificationEmail,
 } = require("../controllers/userController");
 const { protect, admin } = require("../middlewares/authMiddleware");
 
@@ -22,6 +23,7 @@ router.route("/").get(protect, admin, getAllUsers); // Protect route to ensure o
 router.route("/me").get(protect, getUser); // Protect route to ensure only authenticated users can access
 router.route("/user/:id").delete(protect, deleteUser); // Protect route to ensure only authenticated users can access
 router.route("/user-role/:id").put(protect, changeUserRole); // Protect route to ensure only authenticated users can access
+router.post("/resend-verification-email", resendVerificationEmail);
 
 // router.route("/profile").put(protect, updateUser);
 

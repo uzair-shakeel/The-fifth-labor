@@ -9,6 +9,7 @@ const VerificationModal = ({ isOpen, onClose, openAddressModal }) => {
   const [code, setCode] = useState(["", "", "", ""]);
   const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(30); // Initial countdown time
+  const [resending, setResending] = useState(false); // Resending state
   const user = JSON.parse(localStorage.getItem("user"));
   const email = user?.email;
 
@@ -52,7 +53,7 @@ const VerificationModal = ({ isOpen, onClose, openAddressModal }) => {
 
     try {
       const response = await axios.post(`${BASE_URL}/users/verify`, {
-        email: email, // assuming phoneNumber is the email or you can use email directly
+        email: email,
         verificationCode: enteredCode,
       });
 
@@ -67,6 +68,33 @@ const VerificationModal = ({ isOpen, onClose, openAddressModal }) => {
       alert("Verification failed. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    setResending(true);
+
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/users/resend-verification-email`,
+        {
+          email: email,
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Verification code resent successfully");
+        setResendTimer(30); // Reset the timer
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error resending verification code:", error);
+      toast.error(
+        "Failed to resend verification code. Please try again later."
+      );
+    } finally {
+      setResending(false);
     }
   };
 
@@ -113,10 +141,13 @@ const VerificationModal = ({ isOpen, onClose, openAddressModal }) => {
             </p>
             <div className="flex justify-center mt-2 space-x-3">
               <button
-                className="px-4 py-2 text-sm bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 transition"
-                disabled={resendTimer > 0} // Disable when countdown is running
+                onClick={handleResend}
+                className={`px-4 py-2 text-sm bg-blue-100 ${
+                  resendTimer > 0 ? "cursor-not-allowed" : "hover:bg-blue-200"
+                } text-blue-600 rounded-full  transition`}
+                disabled={resendTimer > 0 || resending} // Disable when countdown is running or resending
               >
-                Resend
+                {resending ? "Resending..." : "Resend"}
               </button>
             </div>
           </div>
