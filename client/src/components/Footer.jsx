@@ -8,7 +8,7 @@ const Footer = () => {
     <footer className="bg-gray-900 text-white py-10">
       <div className="container mx-auto px-4">
         {/* Services Section */}
-        <div className="flex flex-wrap gap-[8px] mb-8">
+        <div className="flex flex-wrap text-[7px] md:text-sm gap-[8px] mb-8">
           {[
             "Maid Service",
             "Carpet Cleaning",
@@ -74,51 +74,8 @@ const Footer = () => {
           ))}
         </div>
 
-        {/* Location Section */}
-        {/* <div className="grid grid-cols-1 md:grid-cols-3 text-center gap-4 mb-8">
-          <div>
-            <h4 className="font-semibold mb-2">United Arab Emirates</h4>
-            <div className="flex justify-center space-x-2">
-              {["Dubai", "Abu Dhabi", "Sharjah", "Ajman"].map((city, index) => (
-                <span
-                  key={index}
-                  className="bg-gray-800 rounded-full px-4 py-2"
-                >
-                  {city}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div>
-            <h4 className="font-semibold mb-2">Saudi Arabia</h4>
-            <div className="flex justify-center space-x-2">
-              {["Jeddah", "Riyadh"].map((city, index) => (
-                <span
-                  key={index}
-                  className="bg-gray-800 rounded-full px-4 py-2"
-                >
-                  {city}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div>
-            <h4 className="font-semibold mb-2">Qatar</h4>
-            <div className="flex justify-center space-x-2">
-              {["Doha"].map((city, index) => (
-                <span
-                  key={index}
-                  className="bg-gray-800 rounded-full px-4 py-2"
-                >
-                  {city}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div> */}
-
         {/* App Store and Social Media Section */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col md:flex-row gap-4 justify-between items-center mb-8">
           <div className="flex space-x-4">
             <a href="#" className="bg-black rounded-md p-2">
               <img src={appStore} alt="App Store" className="h-10" />

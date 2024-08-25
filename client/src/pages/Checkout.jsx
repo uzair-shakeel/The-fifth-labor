@@ -321,7 +321,7 @@ const Checkout = () => {
   };
 
   return (
-    <div className="px-14 py-4 bg-gray-50 max-w-7xl mx-auto">
+    <div className="px-4 md:px-14 py-4 bg-gray-50 max-w-7xl mx-auto">
       {showModal && (
         <AddressModal
           showModal={showModal}

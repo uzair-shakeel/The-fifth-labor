@@ -185,7 +185,7 @@ const CreateService = () => {
                   className="form-control"
                   name="image"
                   id="inputGroupFile01"
-                  accept=".png, .jpg, .jpeg"
+                  accept=".png, .jpg, .jpeg, .webp"
                   onChange={(e) =>
                     setServiceData({
                       ...serviceData,

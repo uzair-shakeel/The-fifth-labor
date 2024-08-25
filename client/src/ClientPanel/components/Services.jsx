@@ -13,7 +13,6 @@ const CleaningServices = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        await new Promise((resolve) => setTimeout(resolve, 2000));
         const response = await axios.get(`${BASE_URL}/categories`);
         setServices(response.data);
       } catch (err) {
