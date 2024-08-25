@@ -19,7 +19,10 @@ const app = express();
 
 app.use(express.json());
 
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://the-fifth-labor.vercel.app",
+];
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -60,11 +63,11 @@ app.post("/api/payment/checkout", async (req, res) => {
           quantity: item.quantity,
         };
       }),
-      // success_url: "http://localhost:5173/bookings",
+      success_url: `https://the-fifth-labor.vercel.app/checkout/${id}/step-4?session_id={CHECKOUT_SESSION_ID}`,
+      // success_url: `http://localhost:5173/checkout/${id}/step-4?session_id={CHECKOUT_SESSION_ID}`,
 
-      success_url: `http://localhost:5173/checkout/${id}/step-4?session_id={CHECKOUT_SESSION_ID}`,
-
-      cancel_url: "http://localhost:5173/",
+      // cancel_url: "http://localhost:5173/",
+      cancel_url: "https://the-fifth-labor.vercel.app/",
     });
 
     console.log(session.payment_status);
