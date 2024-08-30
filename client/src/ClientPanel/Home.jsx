@@ -27,7 +27,9 @@ function App() {
 
   return (
     <div>
-      {isLoggedIn ? <Services /> : <Hero />}
+      {/* {isLoggedIn ? <Services /> : <Hero />} */}
+      <Hero />
+      <Services />
       <TopReasons />
       <Reviews />
       <Banner />

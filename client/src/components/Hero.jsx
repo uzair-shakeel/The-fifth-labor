@@ -21,8 +21,8 @@ const Hero = () => {
     >
       <div className="container max-w-7xl mx-auto flex flex-col justify-center items-center h-full text-center">
         {/* Title */}
-        <h1 className="text-5xl font-bold text-gray-800 mb-6">
-          #1 Super app for all home services
+        <h1 className="text-5xl font-[800] uppercase text-gray-800 mb-6">
+          Keeping Abu Dhabi Clean
         </h1>
 
         {/* Search Bar */}

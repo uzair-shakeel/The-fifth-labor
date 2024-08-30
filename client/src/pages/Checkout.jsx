@@ -186,6 +186,16 @@ const Checkout = () => {
   };
 
   const submitBooking = async () => {
+    // Retrieve token from localStorage
+    const token = JSON.parse(localStorage.getItem("token"));
+
+    // Check if token is missing
+    if (!token) {
+      toast.error("Please login to proceed further.");
+      setCompleteLoading(false);
+      return; // Exit the function if token is not available
+    }
+
     if (selectedMethod === "card") {
       // If paymentStatus is not "paid", show an error and exit the function
       if (!paymentStatus || paymentStatus !== "paid") {
@@ -206,9 +216,6 @@ const Checkout = () => {
     }
 
     try {
-      // Retrieve token from localStorage
-      const token = JSON.parse(localStorage.getItem("token"));
-
       // Submit booking request
       const response = await axios.post(`${BASE_URL}/bookings`, userData, {
         headers: {
@@ -227,6 +234,16 @@ const Checkout = () => {
   };
 
   const handlePayment = async () => {
+    // Retrieve token from localStorage
+    const token = JSON.parse(localStorage.getItem("token"));
+
+    // Check if token is missing
+    if (!token) {
+      toast.error("Please login to proceed further.");
+      setPaymentLoading(false);
+      return; // Exit the function if token is not available
+    }
+
     // Validate request data
     if (!id) {
       toast.error("ID is missing.");
@@ -251,6 +268,7 @@ const Checkout = () => {
       setPaymentLoading(false);
       return; // Stop execution if services array is empty
     }
+
     localStorage.setItem("booking", JSON.stringify(userData));
     const requestBody = {
       id,
@@ -268,6 +286,7 @@ const Checkout = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Include the token in the request header
         },
         credentials: "include",
         mode: "cors",

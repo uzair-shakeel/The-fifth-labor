@@ -22,6 +22,7 @@ app.use(express.json());
 const allowedOrigins = [
   "http://localhost:5173",
   "https://the-fifth-labor.vercel.app",
+  "https://www.thefifthlabor.ae",
 ];
 
 const corsOptions = {
