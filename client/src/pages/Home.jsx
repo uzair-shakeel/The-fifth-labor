@@ -8,6 +8,7 @@ import TopReasons from "../components/TopReasons";
 import Footer from "../components/Footer";
 import Banner from "../components/Banner";
 import ChatbotIcon from "../components/Chatbot";
+import WhatsappIcon from "../components/WhatsappIcon";
 import ChatbotModal from "../components/Modals/Chatbot";
 
 function App() {
@@ -24,7 +25,7 @@ function App() {
   return (
     <div>
       {/* <Navbar openLoginSignupModal={openLoginSignupModal} /> */}
-      
+
       <Hero />
       <Services />
       <TopReasons />
@@ -32,8 +33,10 @@ function App() {
       <Banner />
       <Download />
       <ChatbotIcon onClick={handleChatbotOpen} />
+      <WhatsappIcon />
 
       {isChatbotOpen && <ChatbotModal onClose={handleChatbotClose} />}
+
       {/* <Footer /> */}
     </div>
   );

@@ -8,6 +8,7 @@ import TopReasons from "../components/TopReasons";
 import Footer from "../components/Footer";
 import Banner from "../components/Banner";
 import ChatbotIcon from "../components/Chatbot";
+import WhatsappIcon from "../components/WhatsappIcon";
 import ChatbotModal from "../components/Modals/Chatbot";
 import { AuthContext } from "../context/auth-context";
 
@@ -15,7 +16,6 @@ function App() {
   const [isChatbotOpen, setChatbotOpen] = useState(false);
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { isLoggedIn } = useContext(AuthContext);
-
 
   const handleChatbotOpen = () => {
     setChatbotOpen(true);
@@ -33,6 +33,7 @@ function App() {
       <Banner />
       <Download />
       <ChatbotIcon onClick={handleChatbotOpen} />
+      <WhatsappIcon />
       {isChatbotOpen && <ChatbotModal onClose={handleChatbotClose} />}
     </div>
   );

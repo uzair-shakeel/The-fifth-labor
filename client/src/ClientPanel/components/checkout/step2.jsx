@@ -100,7 +100,7 @@ const Step2 = ({ onNext, onAddService, onUpdateQuantity, userData }) => {
                         <span className="text-md font-semibold">
                           AED {addon.discountedPrice}
                         </span>
-                        {addon.price && (
+                        {addon.price === 0 ? null : (
                           <span className="text-gray-400 line-through ml-2">
                             AED {addon.price}
                           </span>

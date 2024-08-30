@@ -15,6 +15,7 @@ import BookingsPage from "../pages/Booking";
 import Confirmed from "../pages/Confirmed";
 import PrivateRoute from "../utils/privateRoutes"; // Import the PrivateRoute component
 import Addresses from "../pages/Addresses";
+import ComingSoon from "../pages/ComingSoon";
 
 const App = () => {
   const [isLoginSignupOpen, setIsLoginSignupOpen] = useState(false);
@@ -127,6 +128,7 @@ const App = () => {
           }
         />
         <Route path="/appointment" element={<Confirmed />} />
+        <Route path="/coming-soon" element={<ComingSoon />} />
       </Routes>
       <Footer />
     </div>

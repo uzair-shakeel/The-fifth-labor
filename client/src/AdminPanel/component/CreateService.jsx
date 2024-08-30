@@ -49,7 +49,6 @@ const CreateService = () => {
 
     if (
       !serviceData.name ||
-      !serviceData.price ||
       !serviceData.description ||
       !serviceData.category ||
       !serviceData.image
@@ -67,7 +66,7 @@ const CreateService = () => {
 
       const formData = new FormData();
       formData.append("name", serviceData.name);
-      formData.append("price", serviceData.price);
+      formData.append("price", serviceData?.price);
       formData.append("discountedPrice", serviceData.discountedPrice);
       formData.append("description", serviceData.description);
       formData.append("category", serviceData.category);

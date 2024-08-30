@@ -14,17 +14,21 @@ exports.createService = async (req, res) => {
       return res.status(400).json({ message: "Invalid category ID" });
     }
 
-    // Create a new service object
-    const newService = new Service({
+    // Create a new service object with optional price field
+    const newServiceData = {
       name,
       description,
-      price,
       discountedPrice,
       imageUrl,
       subCategory,
       category: validCategory._id,
-    });
+    };
 
+    if (price !== undefined) {
+      newServiceData.price = price;
+    }
+
+    const newService = new Service(newServiceData);
     const savedService = await newService.save();
 
     // Add the new service to the category's services array

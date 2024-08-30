@@ -3,9 +3,9 @@ import React from "react";
 const TopReasons = () => {
   const reasons = [
     {
-      icon: "⭐", // You can replace this with an actual image or SVG
+      icon: "⭐",
       image:
-        "https://d222mnpmkyzhbp.cloudfront.net/prod/assets/static/svgs/star-lg.svg", // You can replace this with an actual image or SVG
+        "https://d222mnpmkyzhbp.cloudfront.net/prod/assets/static/svgs/star-lg.svg",
       title: "Top rated professionals",
       description:
         "Our professionals are reliable & well-trained, with an average rating of 4.78 out of 5!",
@@ -34,6 +34,13 @@ const TopReasons = () => {
       description:
         "Being a Super app means we’ve got the widest range of home services, so we’ve got you covered!",
     },
+    {
+      icon: "💬", // You can use an emoji or an icon for WhatsApp
+      image: "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg", // WhatsApp logo
+      title: "Instant Support",
+      description:
+        "Get instant support and quick responses through WhatsApp. We're here to help you anytime!",
+    },
   ];
 
   return (
@@ -43,17 +50,19 @@ const TopReasons = () => {
           There are so many reasons to love The Fifth Labor!
         </h2>
         <p className="text-center text-lg text-gray-600 mb-12">
-          Here are the top 4!
+          Here are the top 5!
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="flex flex-wrap items-center justify-center gap-6">
           {reasons.map((reason, index) => (
-            <div key={index} className="bg-white p-6 rounded-lg  text-center">
+            <div
+              key={index}
+              className="bg-white p-6 w-[300px] h-[300px] flex flex-col items-center justify-center rounded-lg text-center shadow-lg"
+            >
               <img
                 src={reason.image}
                 alt={reason.title}
-                className="mx-auto mb-4"
+                className="mx-auto mb-4 w-24 h-24 object-contain"
               />
-              {/* <div className="text-6xl mb-4">{reason.icon}</div> */}
               <h3 className="text-xl font-semibold mb-2">{reason.title}</h3>
               <p className="text-gray-600">{reason.description}</p>
             </div>

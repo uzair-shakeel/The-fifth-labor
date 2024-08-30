@@ -157,11 +157,16 @@ const Step1 = ({ onNext, onAddService, onUpdateQuantity, setName, name }) => {
                         <div className="flex justify-between items-center">
                           <div className="flex gap-3">
                             <div className="text-md">
-                              AED {service.discountedPrice}
+                              AED{" "}
+                              {service.discountedPrice
+                                ? service.discountedPrice
+                                : service.price}
                             </div>
-                            <div className="text-md text-gray-500 line-through">
-                              AED {service.price}
-                            </div>
+                            {service.price === 0 ? null : (
+                              <div className="text-md text-gray-500 line-through">
+                                AED {service.price}
+                              </div>
+                            )}
                           </div>
 
                           {quantities[service._id] ? (
