@@ -14,6 +14,7 @@ const serviceRoutes = require("./routes/serviceRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const messagesRoutes = require("./routes/messageRoutes");
+const cleanerRoutes = require("./routes/cleanerRoutes");
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use("/api/services", serviceRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/messages", messagesRoutes);
+app.use("/api/cleaners", cleanerRoutes);
 
 app.post("/api/payment/checkout", async (req, res) => {
   try {
