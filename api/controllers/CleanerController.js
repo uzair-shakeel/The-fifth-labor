@@ -96,7 +96,6 @@ exports.addReview = async (req, res) => {
     const { id } = req.params;
     const review = req.body;
     const cleaner = await Cleaner.findById(id);
-    console.log(review);
 
     if (!cleaner) {
       return res.status(404).json({ message: "Cleaner not found" });

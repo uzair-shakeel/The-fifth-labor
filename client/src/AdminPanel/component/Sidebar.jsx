@@ -11,6 +11,7 @@ import { RiReservedFill, RiAdminFill } from "react-icons/ri";
 import { FaUsers, FaExpandAlt } from "react-icons/fa";
 import { BiSolidMessageSquareDetail, BiSolidCategory } from "react-icons/bi";
 import { ImShrink2 } from "react-icons/im";
+import { GiLargePaintBrush } from "react-icons/gi";
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -114,6 +115,16 @@ const Sidebar = () => {
                 <GrServices size={25} />
 
                 {isCollapsed ? "" : "Services"}
+              </Link>
+            </li>
+            <li className="nav-item admin-nav-items">
+              <Link
+                to="/cleaners"
+                className="nav-link flex items-center gap-2 sidebar-link text-white"
+              >
+                <GiLargePaintBrush size={25} />
+
+                {isCollapsed ? "" : "Cleaners"}
               </Link>
             </li>
             <li className="nav-item admin-nav-items">
