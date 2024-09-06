@@ -43,7 +43,7 @@ exports.getCleaner = async (req, res) => {
 // Get all cleaners
 exports.getAllCleaners = async (req, res) => {
   try {
-    const cleaners = await Cleaner.find();
+    const cleaners = await Cleaner.find().sort({ createdAt: -1 });
     res.json(cleaners);
   } catch (error) {
     res.status(500).json({ error: error.message });

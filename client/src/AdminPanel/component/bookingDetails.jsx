@@ -123,6 +123,14 @@ const BookingDetails = () => {
               <p>{booking.hours} hours</p>
             </div>
           )}
+          {booking.cleaner && (
+            <div className="col-md-6">
+              <p>
+                <strong>Cleaner:</strong>
+              </p>
+              <p>{booking.cleaner}</p>
+            </div>
+          )}
           {booking.professional && (
             <div className="col-md-6">
               <p>

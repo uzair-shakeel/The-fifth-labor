@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
+import { BASE_URL } from "../../../utils/BaseURL";
+import axios from "axios";
 
-const Step3 = ({ onNext, onDataChange, serviceType }) => {
+const Step3 = ({ onNext, onDataChange, serviceType, total }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [selectedHours, setSelectedHours] = useState(null);
   const [selectedProfessionals, setSelectedProfessionals] = useState(null);
+  const [selectedCleaner, setSelectedCleaner] = useState(null);
   const [selectedMaterials, setSelectedMaterials] = useState(null);
-
+  const [cleaners, setCleaners] = useState([]);
   const [dates, setDates] = useState([]);
   const [timeSlots, setTimeSlots] = useState([]);
 
@@ -27,13 +30,47 @@ const Step3 = ({ onNext, onDataChange, serviceType }) => {
     generateDates();
   }, []);
 
+  // useEffect(() => {
+  //   const generateTimeSlots = () => {
+  //     const slots = [];
+  //     for (let i = 0; i < 24; i++) {
+  //       const hour = i.toString().padStart(2, "0");
+  //       slots.push(`${hour}:00-${hour}:30`);
+  //       slots.push(`${hour}:30-${(i + 1).toString().padStart(2, "0")}:00`);
+  //     }
+  //     setTimeSlots(slots);
+  //   };
+
+  //   generateTimeSlots();
+  // }, []);
+
   useEffect(() => {
+    const peakHours = [
+      "00:00-00:30",
+      "00:30-01:00",
+      "01:00-01:30",
+      "09:30-10:00",
+      "18:00-18:30",
+      "18:30-19:00",
+      "19:00-19:30",
+      "19:30-20:00",
+    ];
+
     const generateTimeSlots = () => {
       const slots = [];
       for (let i = 0; i < 24; i++) {
         const hour = i.toString().padStart(2, "0");
-        slots.push(`${hour}:00-${hour}:30`);
-        slots.push(`${hour}:30-${(i + 1).toString().padStart(2, "0")}:00`);
+        const slot1 = `${hour}:00-${hour}:30`;
+        const slot2 = `${hour}:30-${(i + 1).toString().padStart(2, "0")}:00`;
+
+        slots.push({
+          time: slot1,
+          isPeak: peakHours.includes(slot1),
+        });
+        slots.push({
+          time: slot2,
+          isPeak: peakHours.includes(slot2),
+        });
       }
       setTimeSlots(slots);
     };
@@ -43,11 +80,12 @@ const Step3 = ({ onNext, onDataChange, serviceType }) => {
 
   useEffect(() => {
     // Notify the parent component whenever the selections change
-    if (selectedDate && selectedTime) {
+    if (selectedDate || selectedTime || selectedCleaner) {
       onDataChange({
         date: selectedDate,
         time: selectedTime,
         hours: selectedHours,
+        cleaner: selectedCleaner.name,
         professional: selectedProfessionals,
         cleaningMaterial: selectedMaterials,
       });
@@ -63,6 +101,7 @@ const Step3 = ({ onNext, onDataChange, serviceType }) => {
     }
   }, [
     selectedDate,
+    selectedCleaner,
     selectedTime,
     selectedHours,
     selectedProfessionals,
@@ -70,6 +109,20 @@ const Step3 = ({ onNext, onDataChange, serviceType }) => {
     serviceType,
     onDataChange,
   ]);
+
+  useEffect(() => {
+    const fetchCleaners = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/cleaners`);
+        setCleaners(response.data); // Assuming the response is an array of cleaners
+        console.log("object", response);
+      } catch (error) {
+        console.error("Failed to fetch cleaners:", error);
+      }
+    };
+
+    fetchCleaners();
+  }, []);
 
   const isFormComplete =
     serviceType === "Home Cleaning"
@@ -87,6 +140,36 @@ const Step3 = ({ onNext, onDataChange, serviceType }) => {
         className="overflow-y-auto no-scrollbar"
         style={{ maxHeight: "calc(100vh - 80px)" }}
       >
+        <p className="text-xl font-semibold mt-8 mb-4">
+          Which professional do you prefer?
+        </p>
+        <div className="flex items-center gap-3 overflow-x-auto whitespace-nowrap no-scrollbar">
+          {/* Display available cleaners */}
+          {cleaners.map((cleaner) => (
+            <div
+              key={cleaner._id}
+              onClick={() => setSelectedCleaner(cleaner)} // Update selectedCleaner
+              className={`flex flex-col items-center justify-center w-[250px] p-3 rounded-lg cursor-pointer border-2 ${
+                selectedCleaner?._id === cleaner._id
+                  ? "bg-blue-500 text-white border-blue-500"
+                  : "text-gray-700 border-gray-300"
+              }`}
+            >
+              <img
+                src={cleaner.image} // Assuming the cleaner object has an image field
+                alt={cleaner.name}
+                className="w-24 h-24 mb-2 rounded-full"
+              />
+              <span className="font-semibold">{cleaner.name}</span>
+              <span className="text-yellow-500 font-semibold text-sm">
+                {cleaner.reviews.length} ★
+              </span>
+              <span className="text-sm text-wrap text-center">
+                Recommended in your area
+              </span>
+            </div>
+          ))}
+        </div>
         <div className="p-4">
           <p className="text-xl font-semibold mb-4">
             When would you like your service?
@@ -114,7 +197,7 @@ const Step3 = ({ onNext, onDataChange, serviceType }) => {
           <p className="text-xl font-semibold mt-8 mb-4">
             What time would you like us to start?
           </p>
-          <div className="flex items-center gap-3 overflow-x-auto whitespace-nowrap no-scrollbar">
+          {/* <div className="flex items-center gap-3 overflow-x-auto whitespace-nowrap no-scrollbar">
             {timeSlots.map((timeSlot, index) => (
               <div
                 key={index}
@@ -126,6 +209,25 @@ const Step3 = ({ onNext, onDataChange, serviceType }) => {
                 }`}
               >
                 <span className="font-semibold">{timeSlot}</span>
+              </div>
+            ))}
+          </div> */}
+          <div className="flex items-center gap-3 overflow-x-auto whitespace-nowrap no-scrollbar">
+            {timeSlots.map((slot, index) => (
+              <div
+                key={index}
+                onClick={() => setSelectedTime(slot.time)}
+                className={`flex items-center justify-center py-2 px-4 rounded-full cursor-pointer border-2 ${
+                  selectedTime === slot.time
+                    ? "bg-blue-500 text-white border-blue-500"
+                    : "text-gray-700 border-gray-300"
+                } ${slot.isPeak ? "border-red-500 text-red-500" : ""}`} // Highlight peak hours
+              >
+                <span className="font-semibold">{slot.time}</span>
+                {slot.isPeak && (
+                  <span className="ml-2 text-xs">(Peak Hour)</span>
+                )}{" "}
+                {/* Indicate peak hour */}
               </div>
             ))}
           </div>

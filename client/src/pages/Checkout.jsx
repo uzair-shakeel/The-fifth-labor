@@ -30,6 +30,7 @@ const Checkout = () => {
     time: "",
     date: "",
     total: "AED 0.00",
+    cleaner: "",
     hours: "", // Add these fields
     professional: "",
     cleaningMaterial: "",
@@ -95,6 +96,7 @@ const Checkout = () => {
   };
 
   const handleDataChange = (newData) => {
+    console.log("object", newData);
     setUserData((prevData) => {
       const updatedData = {
         ...prevData,
@@ -344,6 +346,7 @@ const Checkout = () => {
             onNext={handleNext}
             onBack={handleBack}
             onDataChange={handleDataChange}
+            total={userData.total}
             onAddService={onAddService}
             serviceType={name}
           />
@@ -479,6 +482,12 @@ const Checkout = () => {
             <span className="text-left">Time</span>
             <strong className="text-right">
               {userData.time || "Not selected"}
+            </strong>
+          </p>
+          <p className="mb-2 flex justify-between">
+            <span className="text-left">Cleaner</span>
+            <strong className="text-right">
+              {userData.cleaner || "Not selected"}
             </strong>
           </p>
 

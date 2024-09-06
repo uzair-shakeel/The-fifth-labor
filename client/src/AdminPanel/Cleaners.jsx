@@ -18,7 +18,7 @@ const Cleaners = () => {
             <h5 className="dashboard-text">All Cleaners</h5>
             <Link
               className="add-tour-btn btn btn-light text-white font-bold"
-              to="/createcategory"
+              to="/createcleaner"
             >
               <i className="ri-file-add-line text-white"></i> Add Cleaner
             </Link>

@@ -66,6 +66,10 @@ const Confirmed = () => {
             {bookingData?.total || "Not specified"}
           </p>
           <p>
+            <span className="font-semibold">Cleaner:</span>{" "}
+            {bookingData?.cleaner || "Not specified"}
+          </p>
+          <p>
             <span className="font-semibold">Address:</span>{" "}
             {bookingData?.address || "Not specified"}
           </p>
