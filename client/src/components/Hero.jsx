@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import image from "../../public/hero.webp";
 import { toast } from "react-hot-toast";
 import { TiInfo } from "react-icons/ti";
 import axios from "axios";
+import debounce from "lodash.debounce"; // Import debounce from lodash
 
 const Hero = () => {
   const [input, setInput] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [selectedSuggestion, setSelectedSuggestion] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   // Bounding box for Abu Dhabi
@@ -18,32 +18,40 @@ const Hero = () => {
     west: 54.2634,
   };
 
-  useEffect(() => {
-    if (input) {
-      setIsLoading(true);
-      axios
-        .get(`https://nominatim.openstreetmap.org/search`, {
-          params: {
-            format: "json",
-            q: input,
-            addressdetails: 1,
-            // Filter results to Abu Dhabi using the bounding box
-            bounded: 1,
-            viewbox: `${boundingBox.west},${boundingBox.south},${boundingBox.east},${boundingBox.north}`,
-          },
-        })
-        .then((response) => {
+  // Debounced function to fetch suggestions
+  const fetchSuggestions = useCallback(
+    debounce(async (query) => {
+      if (query) {
+        setIsLoading(true);
+        try {
+          const response = await axios.get(
+            `https://nominatim.openstreetmap.org/search`,
+            {
+              params: {
+                format: "json",
+                q: query,
+                addressdetails: 1,
+                bounded: 1,
+                viewbox: `${boundingBox.west},${boundingBox.south},${boundingBox.east},${boundingBox.north}`,
+              },
+            }
+          );
           setSuggestions(response.data.map((result) => result.display_name));
-          setIsLoading(false);
-        })
-        .catch((error) => {
+        } catch (error) {
           console.error("Error fetching suggestions:", error);
+        } finally {
           setIsLoading(false);
-        });
-    } else {
-      setSuggestions([]);
-    }
-  }, [input]);
+        }
+      } else {
+        setSuggestions([]);
+      }
+    }, 300),
+    []
+  ); // Empty dependency array ensures debounce function is memoized
+
+  useEffect(() => {
+    fetchSuggestions(input);
+  }, [input, fetchSuggestions]);
 
   const showToast = () => {
     toast("Log In Please", {
@@ -61,7 +69,6 @@ const Hero = () => {
   };
 
   const handleSuggestionClick = (suggestion) => {
-    setSelectedSuggestion(suggestion);
     setInput(suggestion);
     setSuggestions([]);
   };
