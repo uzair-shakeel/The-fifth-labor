@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const CheckoutPage = () => {
   const [hours, setHours] = useState(2);
@@ -8,6 +8,11 @@ const CheckoutPage = () => {
   const handleHourSelection = (selectedHours) => {
     setHours(selectedHours);
   };
+
+  useEffect(() => {
+    // Scroll to the top when the component is mounted
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleProfessionalSelection = (selectedProfessionals) => {
     setProfessionals(selectedProfessionals);

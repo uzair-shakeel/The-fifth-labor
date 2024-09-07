@@ -1,45 +1,66 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import appStore from "../../public/appstore.png";
 import playStore from "../../public/playstore.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios"; // Import Axios
+import { BASE_URL } from "../utils/BaseURL";
 
 const Footer = () => {
+  const [services, setServices] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const navigate = useNavigate(); // Replaces useHistory for navigation
+
+  useEffect(() => {
+    // Fetch services and categories from the API using Axios
+    const fetchServicesAndCategories = async () => {
+      try {
+        const [servicesResponse, categoriesResponse] = await Promise.all([
+          axios.get(`${BASE_URL}/services`),
+          axios.get(`${BASE_URL}/categories`),
+        ]);
+
+        const uniqueServices = servicesResponse.data.filter(
+          (service, index, self) =>
+            index ===
+            self.findIndex((s) => s.subCategory === service.subCategory)
+        );
+
+        setServices(uniqueServices || []);
+        setCategories(categoriesResponse.data || []);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
+    };
+
+    fetchServicesAndCategories();
+  }, []);
+
+  // Handle click on service chip
+  const handleChipClick = (serviceName) => {
+    const matchingCategory = categories.find(
+      (category) => category._id === serviceName
+    );
+
+    if (matchingCategory) {
+      navigate(`/checkout/${matchingCategory._id}/step-1`); // Use navigate for redirection
+    } else {
+      console.log("No matching category found");
+    }
+  };
+
   return (
     <footer className="bg-gray-900 text-white py-10">
       <div className="container mx-auto px-4">
         {/* Services Section */}
         <div className="flex flex-wrap text-[7px] md:text-sm gap-[8px] mb-8">
-          {[
-            "Home Cleaning",
-            "Apartment Cleaning",
-            "Villa Cleaning",
-            "Office Cleaning",
-            "Carpet Cleaning",
-            "Mattress Cleaning",
-            "Sofa Cleaning",
-            "Curtain Cleaning",
-            "Deep Cleaning",
-            "Split AC Cleaning",
-            "Central & Duct AC Cleaning",
-            "Car Cleaning",
-            "Motorcycle Cleaning",
-            "Hourly Male Office Cleaning",
-            "Hourly Male Home Cleaning",
-            "House Cleaning",
-            "Laundry & Dry Cleaning",
-            "AC Cleaning Service",
-            "Disinfection Service",
-            "Furniture Cleaning",
-            "Commercial Cleaning",
-            "Office Cleaning",
-            "Villa Cleaning",
-          ].map((service, index) => (
+          {services.map((service, index) => (
             <div
               key={index}
-              className="bg-gray-800 rounded-full px-2 py-1 text-sm text-center"
+              className="bg-gray-800 rounded-full px-2 py-1 text-sm text-center cursor-pointer"
+              onClick={() => handleChipClick(service.category)} // Click handler
             >
-              {service}
+              {service.subCategory}
             </div>
           ))}
         </div>
