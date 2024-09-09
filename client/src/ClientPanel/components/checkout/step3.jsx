@@ -113,7 +113,9 @@ const Step3 = ({ onNext, onDataChange, serviceType, total }) => {
   useEffect(() => {
     const fetchCleaners = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/cleaners`);
+        const response = await axios.get(
+          `${BASE_URL}/cleaners/specific/available`
+        );
         setCleaners(response.data); // Assuming the response is an array of cleaners
         console.log("object", response);
       } catch (error) {

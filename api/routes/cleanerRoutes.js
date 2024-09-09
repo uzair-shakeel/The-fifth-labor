@@ -9,6 +9,11 @@ const router = express.Router();
 router.post("/", upload.single("image"), cleanersController.createCleaner); // Create a new cleaner with image upload
 router.get("/:id", cleanersController.getCleaner); // Get a single cleaner by ID
 router.get("/", cleanersController.getAllCleaners); // Get all cleaners
+router.get("/specific/available", cleanersController.getAvailableCleaners); // Get all cleaners
+router.get(
+  "/specific/not-available",
+  cleanersController.getNonAvailableCleaners
+); // Get all cleaners
 router.put("/:id", upload.single("image"), cleanersController.updateCleaner); // Update a cleaner by ID with image upload
 router.delete("/:id", cleanersController.deleteCleaner); // Delete a cleaner by ID
 router.post("/:id/reviews", cleanersController.addReview); // Add a review to a cleaner

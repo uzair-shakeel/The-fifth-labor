@@ -31,6 +31,7 @@ const Cleaners = () => {
                     #
                   </th>
                   <th scope="col">Name</th>
+                  <th scope="col">Archive</th>
                   <th scope="col">Experience</th>
                   <th scope="col">Age</th>
                   <th scope="col">Reviews</th>
@@ -72,7 +73,7 @@ const Cleaners = () => {
 export default Cleaners;
 
 export const AllCleanersData = ({ category }) => {
-  const { _id, name, experience, age, reviews } = category;
+  const { _id, name, experience, age, reviews, isAvailable } = category;
 
   const handleDelete = (id) => {
     deleteData(`${BASE_URL}/cleaners/${id}`);
@@ -81,6 +82,9 @@ export const AllCleanersData = ({ category }) => {
   return (
     <>
       <td className="text-wrap font-[600]">{name}</td>
+      <td className="text-wrap font-[600]">
+        {isAvailable === true ? "No" : "Yes"}
+      </td>
       <td className="text-wrap">{experience} years</td>
       <td className="text-wrap">{age} years</td>
       <td className="text-wrap">{reviews.length} reviews</td>

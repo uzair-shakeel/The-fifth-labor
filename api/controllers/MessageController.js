@@ -1,4 +1,5 @@
 const Message = require("../models/Message");
+const sendEmail = require("../utils/sendMessage"); // Import the sendEmail function
 
 // Create a new message
 exports.createMessage = async (req, res) => {
@@ -14,8 +15,18 @@ exports.createMessage = async (req, res) => {
     const newMessage = new Message({ email, message });
     const savedMessage = await newMessage.save();
 
+    // Send email notification to admin
+    const adminEmail = "uzairshakeel00000@gmail.com";
+    const subject = "New Message Received";
+    const emailContent = `
+      <p>You have received a new message from: ${email}</p>
+      <p>Message: ${message}</p>
+    `;
+
+    await sendEmail(adminEmail, subject, emailContent); // Send email to the admin
+
     res.status(201).json({
-      message: "Message created successfully",
+      message: "Message created successfully and notification email sent",
       data: savedMessage,
     });
   } catch (error) {
@@ -23,6 +34,30 @@ exports.createMessage = async (req, res) => {
     res.status(500).json({ message: "Error creating message" });
   }
 };
+
+// Create a new message
+// exports.createMessage = async (req, res) => {
+//   try {
+//     const { email, message } = req.body;
+
+//     if (!email || !message) {
+//       return res
+//         .status(400)
+//         .json({ message: "Email and message are required" });
+//     }
+
+//     const newMessage = new Message({ email, message });
+//     const savedMessage = await newMessage.save();
+
+//     res.status(201).json({
+//       message: "Message created successfully",
+//       data: savedMessage,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Error creating message" });
+//   }
+// };
 
 // Get all messages
 exports.getAllMessages = async (req, res) => {

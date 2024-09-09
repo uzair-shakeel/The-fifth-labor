@@ -36,6 +36,7 @@ const Menu = () => {
                   </th>
                   <th scope="col">Item</th>
                   <th scope="col">Name</th>
+                  <th scope="col">Reviews</th>
                   <th scope="col">Sub Category</th>
                   <th scope="col">Discounted Price</th>
                   <th scope="col">Price</th>
@@ -77,14 +78,15 @@ const Menu = () => {
 export default Menu;
 
 export const AllMenuData = ({ item }) => {
-  const { _id, name, imageUrl, price, discountedPrice, subCategory } = item;
+  const { _id, name, imageUrl, price, discountedPrice, subCategory, reviews } =
+    item;
 
   const handleDelete = (id) => {
     deleteData(`${BASE_URL}/services/${id}`);
   };
 
   const { totalRating, avgRating } = calculateAvgRating();
-  // console.log("image URL", imageURL);
+
   return (
     <>
       <td>
@@ -94,6 +96,7 @@ export const AllMenuData = ({ item }) => {
         />
       </td>
       <td className="text-wrap font-[600]">{name}</td>
+      <td className="text-wrap font-[600]">{reviews?.length}</td>
       <td className="text-wrap">{subCategory}</td>
       <td>AED {discountedPrice}.00</td>
       <td>AED {price}.00</td>

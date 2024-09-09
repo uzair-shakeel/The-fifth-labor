@@ -45,6 +45,10 @@ const cleanerSchema = new mongoose.Schema({
     type: String, // Store the URL of the uploaded image
     required: false,
   },
+  isAvailable: {
+    type: Boolean,
+    default: true, // Default value to true, meaning cleaner is available for work
+  },
   reviews: [reviewSchema],
   createdAt: {
     type: Date,

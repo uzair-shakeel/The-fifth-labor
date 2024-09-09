@@ -162,7 +162,7 @@ const Checkout = () => {
       } else {
         updatedServices = [
           ...prevData.services,
-          { ...newService, quantity: 1 },
+          { ...newService, quantity: 1, id: newService._id },
         ];
       }
 

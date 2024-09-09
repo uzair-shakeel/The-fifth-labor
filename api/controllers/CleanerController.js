@@ -4,7 +4,7 @@ const Cleaner = require("../models/Cleaner");
 // Create a new cleaner
 exports.createCleaner = async (req, res) => {
   try {
-    const { name, age, experience } = req.body;
+    const { name, age, experience, isAvailable } = req.body;
     let image = null;
 
     // Check if an image is uploaded
@@ -16,7 +16,7 @@ exports.createCleaner = async (req, res) => {
       name,
       age,
       experience,
-
+      isAvailable,
       image,
     });
 
@@ -50,10 +50,38 @@ exports.getAllCleaners = async (req, res) => {
   }
 };
 
+exports.getAvailableCleaners = async (req, res) => {
+  try {
+    const availableCleaners = await Cleaner.find({
+      isAvailable: { $ne: false },
+    }).sort({ createdAt: -1 });
+    console.log("Available Cleaners:", availableCleaners); // Log to debug
+    res.status(200).json(availableCleaners);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching available cleaners", error });
+  }
+};
+
+// Fetch non-available cleaners
+exports.getNonAvailableCleaners = async (req, res) => {
+  try {
+    const nonAvailableCleaners = await Cleaner.find({
+      isAvailable: false,
+    }).sort({ createdAt: -1 });
+    res.status(200).json(nonAvailableCleaners);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching non-available cleaners", error });
+  }
+};
+
 // Update a cleaner by ID
 exports.updateCleaner = async (req, res) => {
   try {
-    const { name, age, experience } = req.body;
+    const { name, age, experience, isAvailable } = req.body;
     let image = req.body.image; // Keep the existing image by default
 
     // Check if a new image is uploaded
@@ -63,7 +91,7 @@ exports.updateCleaner = async (req, res) => {
 
     const cleaner = await Cleaner.findByIdAndUpdate(
       req.params.id,
-      { name, age, experience, image },
+      { name, age, experience, image, isAvailable },
       { new: true, runValidators: true }
     );
 

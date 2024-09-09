@@ -173,3 +173,72 @@ exports.changeStatus = async (req, res) => {
     res.status(500).json({ message: "Error updating booking status" });
   }
 };
+
+exports.submitReview = async (req, res) => {
+  try {
+    const bookingId = req.params.bookingId;
+    const { serviceId, rating, comment } = req.body;
+    const userId = req.user._id; // Assuming the user is authenticated and we get their ID
+
+    // Find the booking
+    const booking = await Booking.findById(bookingId);
+
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    // Check if the booking belongs to the current user
+    if (booking.customer.toString() !== userId.toString()) {
+      return res
+        .status(403)
+        .json({ message: "You cannot review this booking" });
+    }
+
+    // Check if 14 days have passed since the booking date
+    const currentDate = new Date();
+    const bookingDate = new Date(booking.createdAt);
+    const twoWeeksInMillis = 14 * 24 * 60 * 60 * 1000;
+
+    console.log(bookingDate);
+    console.log(currentDate);
+    console.log(currentDate - bookingDate);
+    console.log(twoWeeksInMillis);
+    // if (currentDate - bookingDate < twoWeeksInMillis) {
+    //   return res.status(400).json({
+    //     message:
+    //       "You can only review this service 2 weeks after the booking date.",
+    //   });
+    // }
+    // Ensure the service being reviewed was part of the booking
+    const bookedService = booking.services.find(
+      (service) => service.id === serviceId
+    );
+
+    if (!bookedService) {
+      return res
+        .status(400)
+        .json({ message: "This service was not booked by you." });
+    }
+
+    // Find the service in the Service model
+    const service = await Service.findById(serviceId);
+    if (!service) {
+      return res.status(404).json({ message: "Service not found" });
+    }
+
+    // Add the review to the service
+    const review = {
+      user: userId,
+      rating,
+      comment,
+      reviewDate: currentDate,
+    };
+
+    service.reviews.push(review);
+    await service.save();
+
+    res.status(201).json({ message: "Review submitted successfully", review });
+  } catch (error) {
+    res.status(500).json({ message: "Error submitting review", error });
+  }
+};

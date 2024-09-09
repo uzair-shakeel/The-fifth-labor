@@ -10,6 +10,7 @@ const UpdateCleaner = () => {
     experience: "",
     age: "",
     image: null, // New image file
+    isAvailable: "false", // String to match select value
   });
 
   const [existingImage, setExistingImage] = useState(null); // Existing image URL
@@ -28,6 +29,7 @@ const UpdateCleaner = () => {
           experience: data.experience,
           age: data.age,
           image: null, // Initialize with null for new image file
+          isAvailable: data.isAvailable ? "true" : "false", // Set as string for select
         });
         setExistingImage(data.image); // Set the existing image URL
       } catch (error) {
@@ -84,6 +86,7 @@ const UpdateCleaner = () => {
       formData.append("name", cleanerData.name);
       formData.append("experience", cleanerData.experience);
       formData.append("age", cleanerData.age);
+      formData.append("isAvailable", cleanerData.isAvailable === "true"); // Convert to boolean
       if (cleanerData.image) {
         formData.append("image", cleanerData.image); // Append new image if selected
       }
@@ -183,6 +186,21 @@ const UpdateCleaner = () => {
                   onChange={handleChange}
                   required
                 />
+              </div>
+
+              {/* Select for Availability */}
+              <div className="input-fields input-group mb-3">
+                <span className="input-group-text">Availability:</span>
+                <select
+                  name="isAvailable"
+                  className="form-control"
+                  value={cleanerData.isAvailable}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="false">Archive</option>
+                  <option value="true">Unarchive</option>
+                </select>
               </div>
 
               <div className="justify-content-end d-flex">

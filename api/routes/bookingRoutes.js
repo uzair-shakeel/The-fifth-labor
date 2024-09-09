@@ -9,6 +9,7 @@ const {
   deleteBooking,
   getAllBookingsByUser,
   changeStatus,
+  submitReview,
 } = require("../controllers/bookingController");
 const { protect, admin } = require("../middlewares/authMiddleware");
 
@@ -22,5 +23,6 @@ router.put("/:id", updateBooking); // Update a booking
 router.delete("/:id", protect, deleteBooking); // Delete a booking
 router.get("/user/:userId", protect, getAllBookingsByUser);
 router.put("/booking/:bookingId", protect, changeStatus);
+router.post("/booking/:bookingId/review", protect, submitReview);
 
 module.exports = router;

@@ -10,7 +10,7 @@ import Banner from "../components/Banner";
 import ChatbotIcon from "../components/Chatbot";
 import WhatsappIcon from "../components/WhatsappIcon";
 import ChatbotModal from "../components/Modals/Chatbot";
-
+import Search from "../components/Search";
 function App() {
   const [isChatbotOpen, setChatbotOpen] = useState(false);
 
@@ -25,15 +25,15 @@ function App() {
   return (
     <div>
       {/* <Navbar openLoginSignupModal={openLoginSignupModal} /> */}
-
-      <Hero />
-      <Services />
+      <Search />
+      {/* <Hero /> */}
+      {/* <Services />
       <TopReasons />
       <Reviews />
       <Banner />
       <Download />
       <ChatbotIcon onClick={handleChatbotOpen} />
-      <WhatsappIcon />
+      <WhatsappIcon /> */}
 
       {isChatbotOpen && <ChatbotModal onClose={handleChatbotClose} />}
 

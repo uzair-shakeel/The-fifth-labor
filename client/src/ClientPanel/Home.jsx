@@ -11,7 +11,7 @@ import ChatbotIcon from "../components/Chatbot";
 import WhatsappIcon from "../components/WhatsappIcon";
 import ChatbotModal from "../components/Modals/Chatbot";
 import { AuthContext } from "../context/auth-context";
-
+import Search from "../components/Search";
 function App() {
   const [isChatbotOpen, setChatbotOpen] = useState(false);
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -28,6 +28,7 @@ function App() {
   return (
     <div>
       {/* {isLoggedIn ? <Services /> : <Hero />} */}
+      {/* <Search /> */}
       <Hero />
       <Services />
       <TopReasons />

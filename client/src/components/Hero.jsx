@@ -1,77 +1,47 @@
-import React, { useState, useEffect, useCallback } from "react";
 import image from "../../public/hero.webp";
-import { toast } from "react-hot-toast";
-import { TiInfo } from "react-icons/ti";
-import axios from "axios";
-import debounce from "lodash.debounce"; // Import debounce from lodash
+import React, { useState, useRef } from "react";
+import { useJsApiLoader, Autocomplete } from "@react-google-maps/api";
+
+const placesLibrary = ["places"];
 
 const Hero = () => {
-  const [input, setInput] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const [locationSet, setLocationSet] = useState(false); // State to hide the component
+  const inputRef = useRef(null);
 
-  // Bounding box for Abu Dhabi
-  const boundingBox = {
-    north: 24.5878,
-    south: 24.44,
-    east: 54.5566,
-    west: 54.2634,
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: "AIzaSyCaeJxpiKN3NSoi-B8MR6RidOgA0yteFlo",
+    libraries: placesLibrary,
+  });
+
+  const handleSelectAddress = () => {
+    const place = inputRef.current.getPlace();
+    if (place.geometry) {
+      const location = place.geometry.location;
+      const newPosition = {
+        lat: location.lat(),
+        lng: location.lng(),
+      };
+      console.log(newPosition);
+      setSelectedAddress(place.formatted_address);
+    }
   };
 
-  // Debounced function to fetch suggestions
-  const fetchSuggestions = useCallback(
-    debounce(async (query) => {
-      if (query) {
-        setIsLoading(true);
-        try {
-          const response = await axios.get(
-            `https://nominatim.openstreetmap.org/search`,
-            {
-              params: {
-                format: "json",
-                q: query,
-                addressdetails: 1,
-                bounded: 1,
-                viewbox: `${boundingBox.west},${boundingBox.south},${boundingBox.east},${boundingBox.north}`,
-              },
-            }
-          );
-          setSuggestions(response.data.map((result) => result.display_name));
-        } catch (error) {
-          console.error("Error fetching suggestions:", error);
-        } finally {
-          setIsLoading(false);
-        }
-      } else {
-        setSuggestions([]);
-      }
-    }, 300),
-    []
-  ); // Empty dependency array ensures debounce function is memoized
-
-  useEffect(() => {
-    fetchSuggestions(input);
-  }, [input, fetchSuggestions]);
-
-  const showToast = () => {
-    toast("Log In Please", {
-      icon: <TiInfo className="text-white" size={20} />,
-      style: {
-        borderRadius: "8px",
-        background: "#888",
-        color: "#fff",
-      },
-    });
+  const handleSetLocation = () => {
+    if (selectedAddress) {
+      setLocationSet(true); // Hide the component when location is set
+    }
   };
 
-  const handleInputChange = (e) => {
-    setInput(e.target.value);
-  };
+  if (!isLoaded) {
+    return <h1>Loading...</h1>;
+  }
 
-  const handleSuggestionClick = (suggestion) => {
-    setInput(suggestion);
-    setSuggestions([]);
-  };
+  // Conditionally render the component based on whether the location is set
+  if (locationSet) {
+    return null;
+  }
 
   return (
     <section
@@ -85,38 +55,34 @@ const Hero = () => {
         </h1>
 
         {/* Search Bar */}
-        <div className="relative bg-white shadow-lg rounded-full px-4 py-2 flex items-center space-x-2 w-full max-w-lg">
-          <i className="fas fa-map-marker-alt text-blue-500"></i>
-          <input
-            type="text"
-            value={input}
-            onChange={handleInputChange}
-            placeholder="Search for area, street name, landmark..."
-            className="flex-grow outline-none text-sm"
-          />
-          <button
-            onClick={showToast}
-            className="bg-blue-500 text-white rounded-full px-4 py-2 text-sm"
-          >
-            Set my location
-          </button>
-          {isLoading && (
-            <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-blue-500">
-              <i className="fas fa-spinner fa-spin"></i>
-            </div>
-          )}
-          {suggestions.length > 0 && (
-            <ul className="absolute bg-white border rounded-lg mt-2 w-full max-w-lg shadow-lg z-10 top-full left-0">
-              {suggestions.map((suggestion, index) => (
-                <li
-                  key={index}
-                  onClick={() => handleSuggestionClick(suggestion)}
-                  className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                >
-                  {suggestion}
-                </li>
-              ))}
-            </ul>
+        <div className=" w-2/4">
+          {isLoaded && (
+            <Autocomplete
+              onLoad={(ref) => (inputRef.current = ref)}
+              onPlaceChanged={handleSelectAddress}
+              options={{
+                componentRestrictions: { country: "AE" }, // Restrict to UAE
+              }}
+            >
+              <div className="flex flex-col  p-4 bg-white rounded-lg shadow-md w-full ">
+                <p className="font-bold text-xl text-start pb-3">
+                  Where would you like to receive your service?
+                </p>
+                <div className="rounded-lg border-2 flex  w-full border-gray-300 focus:outline-none">
+                  <input
+                    type="text"
+                    placeholder="Search for area, street name, landmark..."
+                    className="flex-grow p-3 text-sm rounded-lg outline-none"
+                  />
+                  <button
+                    onClick={handleSetLocation}
+                    className="ml-3 px-4 py-2 bg-blue-500 text-white text-sm rounded-lg flex items-center"
+                  >
+                    Set my location
+                  </button>
+                </div>
+              </div>
+            </Autocomplete>
           )}
         </div>
       </div>
