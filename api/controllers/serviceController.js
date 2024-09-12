@@ -145,3 +145,23 @@ exports.deleteService = async (req, res) => {
     res.status(500).json({ message: "Error deleting service" });
   }
 };
+
+// Fetch all reviews for a specific service
+// Fetch all reviews from all services
+exports.getAllReviewsFromAllServices = async (req, res) => {
+  console.log("runnning");
+  try {
+    console.log("runnning");
+    // Find all services and populate the reviews
+    const services = await Service.find().populate("reviews.user", "name"); // Optionally populate user info
+
+    // Aggregate all reviews into a single array
+    const allReviews = services.flatMap((service) => service.reviews);
+
+    res.status(200).json(allReviews);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching reviews from all services", error });
+  }
+};
