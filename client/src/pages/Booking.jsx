@@ -6,44 +6,160 @@ import { BASE_URL } from "../utils/BaseURL";
 const BookingsPage = () => {
   const [bookings, setBookings] = useState([]);
   const [activeTab, setActiveTab] = useState("upcoming");
-  const user = JSON.parse(localStorage.getItem("user"));
+  const [showModal, setShowModal] = useState(false); // For modal visibility
+  const [selectedBookingId, setSelectedBookingId] = useState(null); // For identifying booking
+  const [rating, setRating] = useState(0); // Rating state
+  const [comment, setComment] = useState(""); // Comment state
+
+  // Ensure user is properly fetched from localStorage
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  // useEffect(() => {
+  //   const fetchBookings = async () => {
+  //     const token = JSON.parse(localStorage.getItem("token"));
+
+  //     // Ensure user._id is available before making API request
+  //     if (user?._id && token) {
+  //       try {
+  //         const response = await axios.get(
+  //           `${BASE_URL}/bookings/user/${user._id}`,
+  //           {
+  //             headers: {
+  //               "Content-Type": "application/json",
+  //               Authorization: `Bearer ${token}`,
+  //             },
+  //           }
+  //         );
+  //         // Assuming the API will return if the user has reviewed the booking
+  //         setBookings(response.data || []);
+  //       } catch (error) {
+  //         toast.error("Failed to fetch bookings");
+  //         console.error("Error fetching bookings", error);
+  //       }
+  //     }
+  //   };
+
+  //   fetchBookings();
+  // }, [user?._id]);
 
   useEffect(() => {
     const fetchBookings = async () => {
       const token = JSON.parse(localStorage.getItem("token"));
 
-      try {
-        const response = await axios.get(
-          `${BASE_URL}/bookings/user/${user._id}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setBookings(response.data || []);
-      } catch (error) {
-        toast.error("Failed to fetch bookings");
-        console.error("Error fetching bookings", error);
+      if (user?._id && token) {
+        try {
+          const response = await axios.get(
+            `${BASE_URL}/bookings/user/${user._id}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          const fetchedBookings = response.data || [];
+          console.log("hihihih", response.data);
+
+          // Now fetch the service details for each booking
+          const bookingsWithServices = await Promise.all(
+            fetchedBookings.map(async (booking) => {
+              if (booking.services && booking.services.length > 0) {
+                const serviceId = booking.services[0].id;
+                try {
+                  const serviceResponse = await axios.get(
+                    `${BASE_URL}/services/${serviceId}`,
+                    {
+                      headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                      },
+                    }
+                  );
+                  // Add service details to the booking
+                  booking.serviceDetails = serviceResponse.data;
+                } catch (error) {
+                  console.error(
+                    `Error fetching service details for service ID: ${serviceId}`,
+                    error
+                  );
+                }
+              }
+              return booking;
+            })
+          );
+
+          setBookings(bookingsWithServices);
+        } catch (error) {
+          toast.error("Failed to fetch bookings");
+          console.error("Error fetching bookings", error);
+        }
       }
     };
 
     fetchBookings();
-  }, [user._id]);
+  }, [user?._id]);
 
   const filteredBookings = bookings.filter((booking) => {
     const isUpcoming = new Date(booking.date) >= new Date();
-    const isPast = new Date(booking.date) < new Date();
     const isCompleted = booking.status === "completed";
 
     if (activeTab === "upcoming") {
-      return isUpcoming && booking.status !== "completed"; // Only upcoming and not completed
+      return isUpcoming && !isCompleted; // Only upcoming and not completed
     } else if (activeTab === "past") {
-      return booking.status === "completed";
+      return isCompleted; // Completed past bookings
     }
     return false;
   });
+
+  const handleReviewClick = (bookingId) => {
+    setSelectedBookingId(bookingId);
+    setShowModal(true); // Open the modal
+  };
+
+  const handleReviewSubmit = async () => {
+    const token = JSON.parse(localStorage.getItem("token"));
+
+    // Find the booking by selectedBookingId to extract serviceId
+    const booking = bookings.find((b) => b._id === selectedBookingId);
+
+    // Ensure the booking and services exist
+    if (!booking || !booking.services || booking.services.length === 0) {
+      toast.error("No service found for this booking.");
+      return;
+    }
+
+    const serviceId = booking.services[0].id; // Extract the first service's ID
+
+    try {
+      await axios.post(
+        `${BASE_URL}/bookings/booking/${selectedBookingId}/review`, // Send bookingId in the URL
+        {
+          serviceId, // Send the first service ID in the data
+          rating,
+          comment,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Update the booking to reflect that the review has been submitted
+      setBookings((prevBookings) =>
+        prevBookings.map((b) =>
+          b._id === selectedBookingId ? { ...b, hasReviewed: true } : b
+        )
+      );
+
+      toast.success("Review submitted successfully!");
+      setShowModal(false); // Close the modal
+    } catch (error) {
+      toast.error("Failed to submit review");
+      console.error("Error submitting review", error);
+    }
+  };
 
   return (
     <div className="max-w-2xl mx-auto p-12">
@@ -106,30 +222,62 @@ const BookingsPage = () => {
                 <p className="text-gray-600 mb-4">
                   <strong>Total:</strong> {booking.total}
                 </p>
-                {/* Conditionally render hours and professionals */}
-                {booking.hours && (
-                  <p className="text-gray-600">
-                    <strong>Hours:</strong> {booking.hours}
-                  </p>
+                {activeTab === "past" && !booking.hasReviewed && (
+                  <button
+                    onClick={() => handleReviewClick(booking._id)}
+                    className="mt-2 bg-blue-500 text-white text-sm px-4 py-2 rounded-lg"
+                  >
+                    Give a Review
+                  </button>
                 )}
-                {booking.professional && (
-                  <p className="text-gray-600">
-                    <strong>Professional:</strong> {booking.professional}
-                  </p>
-                )}
-                <div className="flex items-center">
-                  <span className="inline-block bg-blue-100 text-[#00C3FF] text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">
-                    {booking.type || "One-off"}
-                  </span>
-                  <span className="text-gray-500 text-sm">
-                    Verified Professional
-                  </span>
-                </div>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {/* Modal for Review */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h2 className="text-2xl font-bold mb-4">Submit Your Review</h2>
+            <label className="block mb-2">
+              <span className="text-gray-700">Rating (1-5):</span>
+              <input
+                type="number"
+                max="5"
+                min="1"
+                value={rating}
+                onChange={(e) => setRating(e.target.value)}
+                className="block w-full mt-1 p-2 border rounded-md"
+              />
+            </label>
+            <label className="block mb-4">
+              <span className="text-gray-700">Comment:</span>
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                className="block w-full mt-1 p-2 border rounded-md"
+                rows="4"
+              ></textarea>
+            </label>
+            <div className="flex justify-end">
+              <button
+                onClick={() => setShowModal(false)}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mr-2"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleReviewSubmit}
+                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
