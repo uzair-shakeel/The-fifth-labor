@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { BASE_URL } from "../utils/BaseURL";
+import { RxCross1 } from "react-icons/rx";
 
 const BookingsPage = () => {
   const [bookings, setBookings] = useState([]);
@@ -13,34 +14,6 @@ const BookingsPage = () => {
 
   // Ensure user is properly fetched from localStorage
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-
-  // useEffect(() => {
-  //   const fetchBookings = async () => {
-  //     const token = JSON.parse(localStorage.getItem("token"));
-
-  //     // Ensure user._id is available before making API request
-  //     if (user?._id && token) {
-  //       try {
-  //         const response = await axios.get(
-  //           `${BASE_URL}/bookings/user/${user._id}`,
-  //           {
-  //             headers: {
-  //               "Content-Type": "application/json",
-  //               Authorization: `Bearer ${token}`,
-  //             },
-  //           }
-  //         );
-  //         // Assuming the API will return if the user has reviewed the booking
-  //         setBookings(response.data || []);
-  //       } catch (error) {
-  //         toast.error("Failed to fetch bookings");
-  //         console.error("Error fetching bookings", error);
-  //       }
-  //     }
-  //   };
-
-  //   fetchBookings();
-  // }, [user?._id]);
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -58,7 +31,6 @@ const BookingsPage = () => {
             }
           );
           const fetchedBookings = response.data || [];
-          console.log("hihihih", response.data);
 
           // Now fetch the service details for each booking
           const bookingsWithServices = await Promise.all(
@@ -77,6 +49,11 @@ const BookingsPage = () => {
                   );
                   // Add service details to the booking
                   booking.serviceDetails = serviceResponse.data;
+
+                  // Check if the user has already reviewed the service
+                  booking.hasReviewed = serviceResponse.data?.reviews?.some(
+                    (review) => review.user === user._id
+                  );
                 } catch (error) {
                   console.error(
                     `Error fetching service details for service ID: ${serviceId}`,
@@ -240,39 +217,52 @@ const BookingsPage = () => {
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-            <h2 className="text-2xl font-bold mb-4">Submit Your Review</h2>
-            <label className="block mb-2">
-              <span className="text-gray-700">Rating (1-5):</span>
-              <input
-                type="number"
-                max="5"
-                min="1"
-                value={rating}
-                onChange={(e) => setRating(e.target.value)}
-                className="block w-full mt-1 p-2 border rounded-md"
-              />
-            </label>
-            <label className="block mb-4">
-              <span className="text-gray-700">Comment:</span>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">My Review</h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-black hover:text-gray-500"
+              >
+                <RxCross1 />
+              </button>
+            </div>
+
+            <div className="mb-4 ">
+              <label className="block text-gray-700 mb-2 ">
+                General Rating
+              </label>
+              <div className="flex space-x-2 items-center justify-center">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    onClick={() => setRating(star)}
+                    className={`text-2xl ${
+                      rating >= star ? "text-yellow-500" : "text-gray-300"
+                    }`}
+                  >
+                    ★
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-gray-700">Review</label>
               <textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
+                placeholder="How was your experience?"
                 className="block w-full mt-1 p-2 border rounded-md"
                 rows="4"
               ></textarea>
-            </label>
+            </div>
+
             <div className="flex justify-end">
               <button
-                onClick={() => setShowModal(false)}
-                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mr-2"
-              >
-                Cancel
-              </button>
-              <button
                 onClick={handleReviewSubmit}
-                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                className="bg-yellow-400 text-white px-4 py-2 rounded-lg hover:bg-yellow-500"
               >
-                Submit
+                Submit Review
               </button>
             </div>
           </div>
