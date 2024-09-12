@@ -55,7 +55,7 @@ const CustomerSays = () => {
 
   // Slick slider settings with custom arrows
   const settings = {
-    dots: true, // Show dots below the carousel
+    dots: false, // Show dots below the carousel
     infinite: true, // Loop the slides
     speed: 500, // Transition speed
     slidesToShow: 1, // Show one slide at a time
