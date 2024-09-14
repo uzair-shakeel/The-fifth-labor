@@ -58,6 +58,10 @@ const Confirmed = () => {
             {bookingTime}
           </p>
           <p>
+            <span className="font-semibold">Frequency:</span> {bookingDate},{" "}
+            {bookingData?.frequency}
+          </p>
+          <p>
             <span className="font-semibold">Service Details:</span>{" "}
             {bookingData?.services[0]?.description || "No details available"}
           </p>

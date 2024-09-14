@@ -115,6 +115,15 @@ const BookingDetails = () => {
             </div>
           )}
 
+          {booking?.frequency && (
+            <div className="col-md-6">
+              <p>
+                <strong>Frequency:</strong>
+              </p>
+              <p>{booking.frequency}</p>
+            </div>
+          )}
+
           {booking.hours && (
             <div className="col-md-6">
               <p>

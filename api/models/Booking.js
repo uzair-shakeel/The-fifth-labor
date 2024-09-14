@@ -28,6 +28,7 @@ const BookingSchema = new mongoose.Schema({
   date: { type: Date, required: true },
   time: { type: String }, // e.g., "10:00 AM"
   description: { type: String },
+  frequency: { type: String },
   status: {
     type: String,
     enum: ["confirmed", "completed", "cancelled"],

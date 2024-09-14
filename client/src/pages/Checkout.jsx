@@ -20,6 +20,7 @@ const Checkout = () => {
   const [step, setStep] = useState(currentStep);
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [completeLoading, setCompleteLoading] = useState(false);
+  const [selectedFrequency, setSelectedFrequency] = useState("");
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [showModal, setShowModal] = useState(false); // Initialize modal visibility
@@ -34,6 +35,7 @@ const Checkout = () => {
     hours: "", // Add these fields
     professional: "",
     cleaningMaterial: "",
+    frequency: "",
   });
   const [loading, setLoading] = useState(true);
   const [paymentStatus, setPaymentStatus] = useState(null);
@@ -336,6 +338,8 @@ const Checkout = () => {
             onNext={handleNext}
             onBack={handleBack}
             onDataChange={handleDataChange}
+            setSelectedFrequency={setSelectedFrequency}
+            selectedFrequency={selectedFrequency}
             onAddService={onAddService}
             userData={userData}
           />
@@ -488,6 +492,12 @@ const Checkout = () => {
             <span className="text-left">Cleaner</span>
             <strong className="text-right">
               {userData.cleaner || "Not selected"}
+            </strong>
+          </p>
+          <p className="mb-2 flex justify-between">
+            <span className="text-left">Frequency</span>
+            <strong className="text-right">
+              {userData.frequency || "Not selected"}
             </strong>
           </p>
 

@@ -49,3 +49,29 @@ textarea {
   overflow-y: scroll;
   padding-right: 10px; /* To ensure text doesn’t overlap scrollbar */
 }
+
+/* Scrollbar for WebKit-based browsers */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 10px; /* Width of the entire scrollbar */
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Track background */
+  border-radius: 10px; /* Rounded corners */
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background-color: #c0c0c0; /* Scrollbar thumb color */
+  border-radius: 10px; /* Rounded corners */
+  border: 2px solid transparent; /* To add padding around thumb */
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background-color: #a0a0a0; /* Hover color */
+}
+
+/* Firefox scrollbar styling */
+.overflow-y-auto {
+  scrollbar-width: thin; /* Width of the scrollbar */
+  scrollbar-color: #c0c0c0 #f1f1f1; /* Thumb and track colors */
+}

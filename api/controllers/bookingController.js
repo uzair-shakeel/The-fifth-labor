@@ -19,6 +19,7 @@ exports.createBooking = async (req, res) => {
       professional,
       cleaningMaterial,
       notes,
+      frequency
     } = req.body;
 
     // Get customer ID from authenticated user
@@ -44,6 +45,7 @@ exports.createBooking = async (req, res) => {
       time,
       description,
       notes,
+      frequency,
     });
 
     // Save the booking to the database
@@ -160,7 +162,6 @@ exports.updateBooking = async (req, res) => {
   }
 };
 
-// Delete a booking
 exports.deleteBooking = async (req, res) => {
   try {
     const booking = await Booking.findByIdAndDelete(req.params.id);
