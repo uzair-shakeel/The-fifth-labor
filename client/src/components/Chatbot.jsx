@@ -6,7 +6,7 @@ const ChatbotIcon = ({ onClick }) => {
     <div className="fixed bottom-4 right-4">
       <button
         onClick={onClick}
-        className="bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600"
+        className="bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600"
       >
         <FaRobot size={24} />
       </button>

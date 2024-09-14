@@ -18,7 +18,7 @@ const ChatbotIcon = () => {
     <div className="fixed bottom-4 left-4">
       <button
         onClick={handleClick}
-        className="bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600"
+        className="bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600"
       >
         <FaWhatsapp size={24} />
       </button>

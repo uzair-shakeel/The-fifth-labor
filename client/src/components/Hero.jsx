@@ -55,7 +55,7 @@ const Hero = () => {
         </h1>
 
         {/* Search Bar */}
-        <div className=" w-2/4">
+        <div className=" w-[95%] md:w-2/4">
           {isLoaded && (
             <Autocomplete
               onLoad={(ref) => (inputRef.current = ref)}
