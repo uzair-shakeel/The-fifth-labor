@@ -13,7 +13,7 @@ import CreateCleaner from "../AdminPanel/component/CreateCleaner.jsx";
 import UpdateService from "../AdminPanel/component/UpdateService.jsx";
 import Categories from "../AdminPanel/Categories.jsx";
 import CreateCategory from "../AdminPanel/component/CreateCategory.jsx";
-import UpdateCategory from "../AdminPanel/component/UpdateCleaner.jsx";
+import UpdateCategory from "../AdminPanel/component/UpdateCategorys.jsx";
 import BookingDetails from "../AdminPanel/component/bookingDetails.jsx";
 import Cleaners from "../AdminPanel/Cleaners.jsx";
 import UpdateCleaner from "../AdminPanel/component/UpdateCleaner.jsx";
