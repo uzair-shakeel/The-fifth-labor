@@ -16,6 +16,7 @@ import Confirmed from "../pages/Confirmed";
 import PrivateRoute from "../utils/privateRoutes"; // Import the PrivateRoute component
 import Addresses from "../pages/Addresses";
 import ComingSoon from "../pages/ComingSoon";
+import BlogDetail from "../components/BlogDetails";
 
 const App = () => {
   const [isLoginSignupOpen, setIsLoginSignupOpen] = useState(false);
@@ -102,6 +103,7 @@ const App = () => {
         <Route path="/checkout/:id/step-2" element={<Checkout step={2} />} />
         <Route path="/checkout/:id/step-3" element={<Checkout step={3} />} />
         <Route path="/checkout/:id/step-4" element={<Checkout step={4} />} />
+        <Route path="/blogs/:id" element={<BlogDetail />} />
 
         <Route
           path="/profile"

@@ -12,6 +12,7 @@ import WhatsappIcon from "../components/WhatsappIcon";
 import ChatbotModal from "../components/Modals/Chatbot";
 import { AuthContext } from "../context/auth-context";
 import Search from "../components/Search";
+import BlogList from "../components/Blogs";
 function App() {
   const [isChatbotOpen, setChatbotOpen] = useState(false);
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -33,6 +34,7 @@ function App() {
       <Services />
       <TopReasons />
       <Reviews />
+      <BlogList />
       <Banner />
       <Download />
       <ChatbotIcon onClick={handleChatbotOpen} />
