@@ -19,7 +19,7 @@ exports.createBooking = async (req, res) => {
       professional,
       cleaningMaterial,
       notes,
-      frequency
+      frequency,
     } = req.body;
 
     // Get customer ID from authenticated user
@@ -91,8 +91,9 @@ exports.createBooking = async (req, res) => {
 // Get all bookings
 exports.getAllBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find().populate("customer");
-
+    const bookings = await Booking.find()
+      .populate("customer")
+      .sort({ createdAt: -1 });
     res.status(200).json(bookings);
   } catch (error) {
     res.status(500).json({ message: "Error fetching bookings" });

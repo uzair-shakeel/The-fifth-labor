@@ -221,6 +221,7 @@ const Checkout = () => {
 
     try {
       // Submit booking request
+
       const response = await axios.post(`${BASE_URL}/bookings`, userData, {
         headers: {
           "Content-Type": "application/json",

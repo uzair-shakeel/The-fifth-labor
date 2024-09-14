@@ -58,7 +58,7 @@ const Confirmed = () => {
             {bookingTime}
           </p>
           <p>
-            <span className="font-semibold">Frequency:</span> {bookingDate},{" "}
+            <span className="font-semibold">Frequency: </span>
             {bookingData?.frequency}
           </p>
           <p>

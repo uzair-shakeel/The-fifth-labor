@@ -115,15 +115,6 @@ const BookingDetails = () => {
             </div>
           )}
 
-          {booking?.frequency && (
-            <div className="col-md-6">
-              <p>
-                <strong>Frequency:</strong>
-              </p>
-              <p>{booking.frequency}</p>
-            </div>
-          )}
-
           {booking.hours && (
             <div className="col-md-6">
               <p>
@@ -181,11 +172,19 @@ const BookingDetails = () => {
             </p>
             <p>{booking.time}</p>
           </div>
+          {booking.description && (
+            <div className="col-md-4">
+              <p>
+                <strong>Description:</strong>
+              </p>
+              <p>{booking.description}</p>
+            </div>
+          )}
           <div className="col-md-4">
             <p>
-              <strong>Description:</strong>
+              <strong>Frequency:</strong>
             </p>
-            <p>{booking.description}</p>
+            <p>{booking?.frequency}</p>
           </div>
           <div className="col-md-4">
             <p>
