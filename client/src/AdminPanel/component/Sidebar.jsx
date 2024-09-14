@@ -7,7 +7,7 @@ import "./sidebar.css";
 import { AuthContext } from "../../context/AuthContext";
 import { MdDashboard } from "react-icons/md";
 import { GrServices } from "react-icons/gr";
-import { RiReservedFill, RiAdminFill } from "react-icons/ri";
+import { RiReservedFill, RiAdminFill, RiBloggerFill } from "react-icons/ri";
 import { FaUsers, FaExpandAlt } from "react-icons/fa";
 import { BiSolidMessageSquareDetail, BiSolidCategory } from "react-icons/bi";
 import { ImShrink2 } from "react-icons/im";
@@ -135,6 +135,15 @@ const Sidebar = () => {
               >
                 <RiReservedFill size={25} />
                 {isCollapsed ? "" : "Bookings"}
+              </Link>
+            </li>
+            <li className="nav-item admin-nav-items">
+              <Link
+                to="/blogs"
+                className="nav-link flex items-center gap-2 sidebar-link text-white"
+              >
+                <RiBloggerFill size={25} />
+                {isCollapsed ? "" : "Blogs"}
               </Link>
             </li>
             <li className="nav-item admin-nav-items">

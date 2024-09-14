@@ -18,6 +18,9 @@ import BookingDetails from "../AdminPanel/component/bookingDetails.jsx";
 import Cleaners from "../AdminPanel/Cleaners.jsx";
 import UpdateCleaner from "../AdminPanel/component/UpdateCleaner.jsx";
 import TimeSlots from "../AdminPanel/TimeSlots.jsx";
+import Blog from "../AdminPanel/Blog.jsx";
+import CreateBlog from "../AdminPanel/component/createBlog.jsx";
+import UpdateBlog from "../AdminPanel/component/updateBlog.jsx";
 
 const AdminRouters = () => {
   const { user } = useContext(AuthContext);
@@ -30,6 +33,7 @@ const AdminRouters = () => {
       <Route path="/cleaners" element={<Cleaners />} />
       <Route path="/time-management" element={<TimeSlots />} />
       <Route path="/services" element={<Services />} />
+      <Route path="/Blogs" element={<Blog />} />
       <Route path="/bookings" element={<Bookings />} />
       <Route path="/users" element={<Users />} />
       <Route path="/messages" element={<Messages />} />
@@ -38,10 +42,12 @@ const AdminRouters = () => {
       <Route path="/createcategory" element={<CreateCategory />} />
       <Route path="/createcleaner" element={<CreateCleaner />} />
       <Route path="/createservice" element={<CreateService />} />
+      <Route path="/createblog" element={<CreateBlog />} />
       <Route path="/booking/:id" element={<BookingDetails />} />
       <Route path="/updatecategory/:id" element={<UpdateCategory />} />
       <Route path="/updatecleaner/:id" element={<UpdateCleaner />} />
       <Route path="/updateservice/:id" element={<UpdateService />} />
+      <Route path="/updateblog/:id" element={<UpdateBlog />} />
 
       {/* User Logged In? */}
       {user ? (

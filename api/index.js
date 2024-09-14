@@ -50,7 +50,7 @@ app.use("/api/messages", messagesRoutes);
 app.use("/api/cleaners", cleanerRoutes);
 app.use("/api/phone", phoneVerificationRoutes);
 app.use("/api/time", timeRoutes);
-app.use("/api/blog", blogRoutes);
+app.use("/api/blogs", blogRoutes);
 
 app.post("/api/payment/checkout", async (req, res) => {
   try {
