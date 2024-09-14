@@ -16,6 +16,7 @@ const categoryRoutes = require("./routes/categoryRoutes");
 const messagesRoutes = require("./routes/messageRoutes");
 const cleanerRoutes = require("./routes/cleanerRoutes");
 const timeRoutes = require("./routes/timeRoutes");
+const blogRoutes = require("./routes/blogRoutes");
 const phoneVerificationRoutes = require("./routes/phoneVerificationRoutes");
 
 const app = express();
@@ -49,6 +50,7 @@ app.use("/api/messages", messagesRoutes);
 app.use("/api/cleaners", cleanerRoutes);
 app.use("/api/phone", phoneVerificationRoutes);
 app.use("/api/time", timeRoutes);
+app.use("/api/blog", blogRoutes);
 
 app.post("/api/payment/checkout", async (req, res) => {
   try {
