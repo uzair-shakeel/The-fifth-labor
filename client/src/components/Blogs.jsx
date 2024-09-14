@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Card, Row, Col, Spin, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/BaseURL";
@@ -10,9 +10,23 @@ const { Meta } = Card;
 const BlogList = () => {
   const navigate = useNavigate();
   const { data: blogs, loading, error } = useFetch(`${BASE_URL}/blogs`);
+  const [visible, setVisible] = useState(3);
+  const [showAll, setShowAll] = useState(false);
 
   const handleReadMore = (id) => {
     navigate(`/blogs/${id}`);
+  };
+
+  const handleShowMore = () => {
+    setVisible((prevVisible) => prevVisible + 3);
+    if (visible >= (blogs?.length || 0)) {
+      setShowAll(true);
+    }
+  };
+
+  const handleShowLess = () => {
+    setVisible(3);
+    setShowAll(false);
   };
 
   if (loading) {
@@ -31,8 +45,8 @@ const BlogList = () => {
     <div className="blog-list-container">
       <h1 className="text-center blog-list-title">Our Latest Blogs</h1>
       <Row gutter={[16, 16]} justify="center">
-        {blogs?.map((blog) => (
-          <Col xs={24} sm={12} md={8} lg={6} key={blog._id}>
+        {blogs?.slice(0, visible).map((blog) => (
+          <Col xs={24} sm={12} md={8} lg={8} key={blog._id}>
             <Card
               hoverable
               cover={
@@ -59,6 +73,28 @@ const BlogList = () => {
           </Col>
         ))}
       </Row>
+      <div className="text-center mt-6">
+        {!showAll && blogs && blogs.length > visible && (
+          <Button
+            type="primary"
+            size="large"
+            className="show-more-btn"
+            onClick={handleShowMore}
+          >
+            Show More
+          </Button>
+        )}
+        {showAll && (
+          <Button
+            type="primary"
+            size="large"
+            className="show-more-btn"
+            onClick={handleShowLess}
+          >
+            Show Less
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

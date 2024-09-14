@@ -34,3 +34,18 @@
   align-items: center;
   height: 100vh;
 }
+
+.text-center {
+  text-align: center;
+}
+
+.mt-6 {
+  margin-top: 1.5rem;
+}
+
+.show-more-btn {
+  font-size: 18px;
+  padding: 16px 32px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
