@@ -12,6 +12,7 @@ import { FaUsers, FaExpandAlt } from "react-icons/fa";
 import { BiSolidMessageSquareDetail, BiSolidCategory } from "react-icons/bi";
 import { ImShrink2 } from "react-icons/im";
 import { GiLargePaintBrush } from "react-icons/gi";
+import { IoTimeSharp } from "react-icons/io5";
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -134,6 +135,15 @@ const Sidebar = () => {
               >
                 <RiReservedFill size={25} />
                 {isCollapsed ? "" : "Bookings"}
+              </Link>
+            </li>
+            <li className="nav-item admin-nav-items">
+              <Link
+                to="/time-management"
+                className="nav-link flex items-center gap-2 sidebar-link text-white"
+              >
+                <IoTimeSharp size={25} />
+                {isCollapsed ? "" : "Time Slots"}
               </Link>
             </li>
             <li className="nav-item admin-nav-items">

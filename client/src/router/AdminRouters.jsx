@@ -17,6 +17,7 @@ import UpdateCategory from "../AdminPanel/component/UpdateCleaner.jsx";
 import BookingDetails from "../AdminPanel/component/bookingDetails.jsx";
 import Cleaners from "../AdminPanel/Cleaners.jsx";
 import UpdateCleaner from "../AdminPanel/component/UpdateCleaner.jsx";
+import TimeSlots from "../AdminPanel/TimeSlots.jsx";
 
 const AdminRouters = () => {
   const { user } = useContext(AuthContext);
@@ -27,6 +28,7 @@ const AdminRouters = () => {
       {/* <Route path="/login" element={<Login />} /> */}
       <Route path="/categories" element={<Categories />} />
       <Route path="/cleaners" element={<Cleaners />} />
+      <Route path="/time-management" element={<TimeSlots />} />
       <Route path="/services" element={<Services />} />
       <Route path="/bookings" element={<Bookings />} />
       <Route path="/users" element={<Users />} />
