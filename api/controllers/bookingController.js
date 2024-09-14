@@ -1,6 +1,7 @@
 const Booking = require("../models/Booking"); // Adjust the path as necessary
 const User = require("../models/User"); // Adjust the path as necessary
 const Service = require("../models/Service"); // Adjust the path as necessary
+const sendEmail = require("../utils/sendMessage"); // Import the sendEmail function
 
 exports.createBooking = async (req, res) => {
   try {
@@ -47,6 +48,35 @@ exports.createBooking = async (req, res) => {
 
     // Save the booking to the database
     const savedBooking = await newBooking.save();
+
+    // Prepare email content for the admin
+    const adminEmail = "uzairshakeel97531@gmail.com"; // Replace with the actual admin email
+    const subject = "New Booking...";
+    const emailContent = `
+      <h3>New Booking Details</h3>
+      <p><strong>Customer ID:</strong> ${customerId}</p>
+      <p><strong>Address:</strong> ${address}</p>
+      <p><strong>Services:</strong> ${services
+        .map((service) => service.name)
+        .join(", ")}</p>
+      <p><strong>Category:</strong> ${category}</p>
+      <p><strong>Total:</strong> ${total}</p>
+      <p><strong>Cleaner:</strong> ${cleaner}</p>
+      <p><strong>Hours:</strong> ${hours}</p>
+      <p><strong>Professional:</strong> ${professional ? "Yes" : "No"}</p>
+      <p><strong>Cleaning Material:</strong> ${
+        cleaningMaterial ? "Yes" : "No"
+      }</p>
+      <p><strong>Date:</strong> ${date}</p>
+      <p><strong>Time:</strong> ${time}</p>
+      <p><strong>Description:</strong> ${description}</p>
+      <p><strong>Notes:</strong> ${notes}</p>
+    `;
+
+    console.log("email send?");
+
+    // Send the email to the admin
+    await sendEmail(adminEmail, subject, emailContent);
 
     // Return the saved booking as the response
     res.status(201).json(savedBooking);
