@@ -30,52 +30,18 @@ const Step3 = ({ onNext, onDataChange, serviceType, total }) => {
     generateDates();
   }, []);
 
-  // useEffect(() => {
-  //   const generateTimeSlots = () => {
-  //     const slots = [];
-  //     for (let i = 0; i < 24; i++) {
-  //       const hour = i.toString().padStart(2, "0");
-  //       slots.push(`${hour}:00-${hour}:30`);
-  //       slots.push(`${hour}:30-${(i + 1).toString().padStart(2, "0")}:00`);
-  //     }
-  //     setTimeSlots(slots);
-  //   };
-
-  //   generateTimeSlots();
-  // }, []);
-
   useEffect(() => {
-    const peakHours = [
-      "00:00-00:30",
-      "00:30-01:00",
-      "01:00-01:30",
-      "09:30-10:00",
-      "18:00-18:30",
-      "18:30-19:00",
-      "19:00-19:30",
-      "19:30-20:00",
-    ];
-
-    const generateTimeSlots = () => {
-      const slots = [];
-      for (let i = 0; i < 24; i++) {
-        const hour = i.toString().padStart(2, "0");
-        const slot1 = `${hour}:00-${hour}:30`;
-        const slot2 = `${hour}:30-${(i + 1).toString().padStart(2, "0")}:00`;
-
-        slots.push({
-          time: slot1,
-          isPeak: peakHours.includes(slot1),
-        });
-        slots.push({
-          time: slot2,
-          isPeak: peakHours.includes(slot2),
-        });
+    const fetchTimeSlots = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/time/time-management`);
+        setTimeSlots(response.data.timeSlots); // Set timeSlots from the API response
+        console.log(response);
+      } catch (error) {
+        console.error("Failed to fetch time slots:", error);
       }
-      setTimeSlots(slots);
     };
 
-    generateTimeSlots();
+    fetchTimeSlots();
   }, []);
 
   useEffect(() => {
@@ -117,7 +83,6 @@ const Step3 = ({ onNext, onDataChange, serviceType, total }) => {
           `${BASE_URL}/cleaners/specific/available`
         );
         setCleaners(response.data); // Assuming the response is an array of cleaners
-        console.log("object", response);
       } catch (error) {
         console.error("Failed to fetch cleaners:", error);
       }
@@ -215,17 +180,17 @@ const Step3 = ({ onNext, onDataChange, serviceType, total }) => {
             ))}
           </div> */}
           <div className="flex items-center gap-3 overflow-x-auto whitespace-nowrap no-scrollbar">
-            {timeSlots.map((slot, index) => (
+            {timeSlots?.map((slot, index) => (
               <div
                 key={index}
-                onClick={() => setSelectedTime(slot.time)}
+                onClick={() => setSelectedTime(slot.timeRange)}
                 className={`flex items-center justify-center py-2 px-4 rounded-full cursor-pointer border-2 ${
-                  selectedTime === slot.time
+                  selectedTime === slot.timeRange
                     ? "bg-blue-500 text-white border-blue-500"
                     : "text-gray-700 border-gray-300"
                 } ${slot.isPeak ? "border-red-500 text-red-500" : ""}`} // Highlight peak hours
               >
-                <span className="font-semibold">{slot.time}</span>
+                <span className="font-semibold">{slot.timeRange}</span>
                 {slot.isPeak && (
                   <span className="ml-2 text-xs">(Peak Hour)</span>
                 )}{" "}
