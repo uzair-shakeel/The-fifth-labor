@@ -11,7 +11,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useParams, useLocation } from "react-router-dom";
 
-const Checkout = () => {
+const Checkout = ({ openLoginModal }) => {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const stepFromPath = location.pathname.split("/").pop();
@@ -195,7 +195,7 @@ const Checkout = () => {
 
     // Check if token is missing
     if (!token) {
-      toast.error("Please login to proceed further.");
+      openLoginModal();
       setCompleteLoading(false);
       return; // Exit the function if token is not available
     }
@@ -244,7 +244,7 @@ const Checkout = () => {
 
     // Check if token is missing
     if (!token) {
-      toast.error("Please login to proceed further.");
+      openLoginModal();
       setPaymentLoading(false);
       return; // Exit the function if token is not available
     }

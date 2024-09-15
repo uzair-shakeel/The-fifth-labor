@@ -99,10 +99,22 @@ const App = () => {
       <Routes>
         <Route path="/" element={<ClientHome />} />
         {/* <Route path="/checkout/:id" element={<Checkout step={1} />} /> */}
-        <Route path="/checkout/:id/step-1" element={<Checkout step={1} />} />
-        <Route path="/checkout/:id/step-2" element={<Checkout step={2} />} />
-        <Route path="/checkout/:id/step-3" element={<Checkout step={3} />} />
-        <Route path="/checkout/:id/step-4" element={<Checkout step={4} />} />
+        <Route
+          path="/checkout/:id/step-1"
+          element={<Checkout step={1} openLoginModal={openLoginModal} />}
+        />
+        <Route
+          path="/checkout/:id/step-2"
+          element={<Checkout step={2} openLoginModal={openLoginModal} />}
+        />
+        <Route
+          path="/checkout/:id/step-3"
+          element={<Checkout step={3} openLoginModal={openLoginModal} />}
+        />
+        <Route
+          path="/checkout/:id/step-4"
+          element={<Checkout step={4} openLoginModal={openLoginModal} />}
+        />
         <Route path="/blogs/:id" element={<BlogDetail />} />
 
         <Route
