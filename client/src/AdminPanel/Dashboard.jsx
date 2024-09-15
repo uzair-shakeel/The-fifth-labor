@@ -67,6 +67,28 @@ const Dashboard = () => {
     error: errorservices,
   } = useFetch(`${BASE_URL}/services`);
 
+  const {
+    data: blogs,
+    loading: loadingBlogs,
+    error: errorBlogs,
+  } = useFetch(`${BASE_URL}/blogs`);
+
+  const {
+    data: cleaners,
+    loading: loadingCleaners,
+    error: errorCleaners,
+  } = useFetch(`${BASE_URL}/cleaners`);
+  const {
+    data: categories,
+    loading: loadingCategories,
+    error: errorCategories,
+  } = useFetch(`${BASE_URL}/categories`);
+  const {
+    data: messages,
+    loading: loadingMessages,
+    error: errorMessages,
+  } = useFetch(`${BASE_URL}/messages`);
+
   // Categorize users
   const admins = users.filter((user) => user.role === "admin");
   const regularUsers = users.filter((user) => user.role === "user");
@@ -118,6 +140,50 @@ const Dashboard = () => {
             {loadingUsers && <span>Loading...</span>}
             {errorUsers && <span>{errorUsers}</span>}
             {!loadingUsers && !errorUsers && admins.length}
+          </h3>
+        </Link>
+        <Link
+          to="/cleaners"
+          className="general-box mt-5 border-2 align-items-center justify-content-center d-flex flex-column shadow-xl col-lg-3 col-md-4"
+        >
+          <h3>Cleaners</h3>
+          <h3 className="pt-3">
+            {loadingCleaners && <span>Loading...</span>}
+            {errorCleaners && <span>{errorCleaners}</span>}
+            {!loadingCleaners && !errorCleaners && cleaners.length}
+          </h3>
+        </Link>
+        <Link
+          to="/Blogs"
+          className="general-box mt-5 border-2 align-items-center justify-content-center d-flex flex-column shadow-xl col-lg-3 col-md-4"
+        >
+          <h3>Blogs</h3>
+          <h3 className="pt-3">
+            {loadingBlogs && <span>Loading...</span>}
+            {errorBlogs && <span>{errorBlogs}</span>}
+            {!loadingBlogs && !errorBlogs && blogs.length}
+          </h3>
+        </Link>
+        <Link
+          to="/categories"
+          className="general-box mt-5 border-2 align-items-center justify-content-center d-flex flex-column shadow-xl col-lg-3 col-md-4"
+        >
+          <h3>Categories</h3>
+          <h3 className="pt-3">
+            {loadingCategories && <span>Loading...</span>}
+            {errorCategories && <span>{errorCategories}</span>}
+            {!loadingCategories && !errorCategories && categories.length}
+          </h3>
+        </Link>
+        <Link
+          to="/messages"
+          className="general-box mt-5 border-2 align-items-center justify-content-center d-flex flex-column shadow-xl col-lg-3 col-md-4"
+        >
+          <h3>Messages</h3>
+          <h3 className="pt-3">
+            {loadingMessages && <span>Loading...</span>}
+            {errorMessages && <span>{errorMessages}</span>}
+            {!loadingMessages && !errorMessages && messages.length}
           </h3>
         </Link>
       </div>
